@@ -4,7 +4,7 @@
 
 Customers often ask how they can streamline the management and maintenance of their Amazon AppStream 2.0 images and fleets. The AppStream 2.0 service includes a rich set of APIs that allow you to programmatically interact with the service. In addition, the Image Assistant utility within the image builder instances supports [command line interface (CLI)](https://docs.aws.amazon.com/appstream2/latest/developerguide/programmatically-create-image.html) operations for adding applications to the fleet and creating images. What we commonly see is customers struggle with linking the two together; interacting with the service external to the image builder and running commands programmatically within the Microsoft Windows guest operating system within.
 
-This repository contains the supporting scripts for the AWS Desktop and Application Streaming blog article [Automatically create customized AppStream 2.0 Windows images](https://aws.amazon.com/blogs/desktop-and-application-streaming/automatically-cr…0-windows-images/). Please refer to the blog article for guidance on deploying the solution. 
+This repository contains the supporting scripts for the AWS Desktop and Application Streaming blog article [Automatically create customized AppStream 2.0 Windows images](https://aws.amazon.com/blogs/desktop-and-application-streaming/automatically-create-customized-appstream-2-0-windows-images/). Please refer to the blog article for guidance on deploying the solution. 
 
 <p align="center">
    <img src="/WindowsSolutionDiagram.png" alt="Solution Diagram for Windows Image Builders" />
