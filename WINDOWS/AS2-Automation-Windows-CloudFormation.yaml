@@ -902,12 +902,12 @@ Resources:
                       "Next": "Wait 1 min"
                     }
                   ],
-                  "Default": "If Not Available, Wait 10 min",
+                  "Default": "If Not Available, Wait 5 min",
                   "Comment": "Wait for image to enter Available status."
                 },
-                "If Not Available, Wait 10 min": {
+                "If Not Available, Wait 5 min": {
                   "Type": "Wait",
-                  "Seconds": 600,
+                  "Seconds": 300,
                   "Next": "Check Image Status"
                 },
                 "Wait 1 min": {
