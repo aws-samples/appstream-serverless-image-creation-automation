@@ -109,7 +109,7 @@ Below is the relevant section of PowerShell code in the sample install scripts t
 2.	Once you have created your own application install packages, upload them to the Amazon S3 bucket created by the CloudFormation template.
 3.	Navigate to the AWS Lambda console and select **Functions**.
 4.	Choose the **AS2_Automation_Windows_FN02_Scripted_Install_########** function.
-5.	In the **Code source** section, scroll down to the line 63 in the default script. The line of hash marks outlines the beginning and end of each application install section.
+5.	In the **Code source** section, scroll down to the line 77 in the default script. The line of hash marks outlines the beginning and end of each application install section.
 6.	Modify or replace the sections for the sample applications referencing your own packages in Amazon S3 or downloaded off the web.
 7.	Once complete, click **Deploy** to make the updated code active for the next execution of the Lambda function.
 
