@@ -11,7 +11,7 @@ Parameters:
     Default: username@domain.com
   AS2VPCId:
     Type: 'AWS::EC2::VPC::Id'
-    Description: VPCID where AppStream Image Builders and Lambda functions will reside.
+    Description: VPCID where AppStream 2.0 image builders and Lambda functions will reside.
     ConstraintDescription: Must be the VPC Id of an existing Virtual Private Cloud.
   AS2VPCSubnet1:
     Type: 'AWS::EC2::Subnet::Id'
@@ -21,15 +21,15 @@ Parameters:
     Description: Subnet ID where Lambda functions will reside.
   AS2DefaultImage:
     Type: String
-    Description: Default Windows image to use when creating the AppStream Image Builder instance. For non-domain joined Image Builders, input your customized image with the Session Script here. See blog documentation for instructions on creating this.
+    Description: Default Windows image to use when creating the AppStream 2.0 image builder instance. For non-domain joined image builders, input your customized base image with the embedded startup script here. See blog documentation for instructions on creating this.
     Default: AppStream-WinServer2019-03-03-2022
   DefaultDomain:
     Type: String
-    Description: Default Active Directory Domain FQDN to join Image Builder instances to. This should already be setup within the AppStream console. Leave blank or enter 'none' to not join a domain. (onprem.corp.int)
+    Description: Default Active Directory FQDN to join image builder instances to. This should already be setup within the AppStream 2.0 console. Leave blank or enter 'none' to not join a domain. (onprem.corp.int)
     Default: none
   DefaultOU:
     Type: String
-    Description: Default Active Directory OU Distinguished Name to place Image Builder instances in. Leave blank or enter 'none' to not join a domain. (OU=Image_Builders,OU=AppStream,OU=Virtual,OU=Production,OU=EUC,DC=onprem,DC=corp,DC=int)
+    Description: Default Active Directory OU Distinguished Name to place image builder instances in. Leave blank or enter 'none' to not join a domain. (OU=Image_Builders,OU=AppStream,OU=Virtual,OU=Production,OU=EUC,DC=onprem,DC=corp,DC=int)
     Default: none
 Conditions:
     IsNotJoinDomain: !Or [!Equals [!Ref DefaultDomain, "none"], !Equals [!Ref DefaultDomain, ""]]
@@ -43,7 +43,7 @@ Resources:
             reason: For this workshop we will not specify the KMS key explicitly.    
     Properties:
       Name: as2/builder/pw
-      Description: "Local admin account on AppStream 2.0 Image Builder. This secret has a dynamically generated secret password."
+      Description: "Local admin account on AppStream 2.0 image builders used in the image creation automation. This secret has a dynamically generated secret password."
       GenerateSecretString:
         SecretStringTemplate: '{"as2_builder_admin_user": "as2_builder_admin"}'
         GenerateStringKey: "as2_builder_admin_pw"
@@ -166,7 +166,7 @@ Resources:
           - id: W28
             reason: Resource names are dynamically created using the stack id                      
     Properties:
-        GroupDescription: Allows AppStream 2.0 Automation Lambda functions to communicate with Image Builder instances and AWS services.
+        GroupDescription: Allows AppStream 2.0 automation Lambda functions to communicate with image builder instances and other AWS services.
         GroupName: !Join
           - "_"
           - - "AS2_Automation_Windows_Lambdas"
@@ -231,7 +231,7 @@ Resources:
           - id: W40
             reason: Image builders that are domain joined will require a large number of ports open to function. Without knowing each customer's environment, this is left open intentionally                                    
     Properties:
-        GroupDescription: Allows AppStream 2.0 Automation Lambda functions to communicate with Image Builder instances, and Image Builders to talk to outside resources and AWS services.
+        GroupDescription: Allows AppStream 2.0 automation Lambda functions to communicate with image builder instances, and image builders to talk to outside resources and AWS services.
         GroupName: !Join
           - "_"
           - - "AS2_Automation_Windows_ImageBuilders"
@@ -248,7 +248,7 @@ Resources:
           Ref: AS2VPCId
         SecurityGroupEgress:
         - IpProtocol: '-1'
-          Description: "Allow outbound traffic from Image Builder"
+          Description: "Allow outbound traffic from image builder"
           CidrIp: 0.0.0.0/0 
   ImageBuilderSecurityGroupIngressRule1:
     Type: AWS::EC2::SecurityGroupIngress
@@ -313,7 +313,7 @@ Resources:
           - id: W28
             reason: Resource names are dynamically created using the stack id      
     Properties:
-      Description: Permissions needed by Lambda functions to interact with AppStream Image Builders and service.
+      Description: Permissions needed by Lambda functions to interact with AppStream 2.0 image builders and service.
       ManagedPolicyName: !Join
         - "_"
         - - "AS2_Automation_Windows_Lambda_Policy"
@@ -385,7 +385,7 @@ Resources:
                 - !Split
                   - "/"
                   - !Ref "AWS::StackId"
-      Description: IAM role for AppStream Automation Step Function
+      Description: IAM role for AppStream 2.0 automation Step Function
       AssumeRolePolicyDocument: # What service can assume this role
         Version: '2012-10-17'
         Statement: 
@@ -406,7 +406,7 @@ Resources:
           - id: W28
             reason: Resource names are dynamically created using the stack id      
     Properties:
-      Description: Permissions needed by Step Function functions to interact with AppStream Image Builders, AppStream service, and SNS.
+      Description: Permissions needed by Step Function functions to interact with AppStream 2.0 image builders, the AppStream 2.0 service, and SNS.
       ManagedPolicyName: !Join
         - "_"
         - - "AS2_Automation_Windows_StepFunction_Policy"
@@ -475,7 +475,7 @@ Resources:
                 - !Split
                   - "/"
                   - !Ref "AWS::StackId"
-      Description: IAM role for AppStream Automation Image Builders
+      Description: IAM role for AppStream 2.0 automation image builders
       AssumeRolePolicyDocument: # What service can assume this role
         Version: '2012-10-17'
         Statement: 
@@ -496,7 +496,7 @@ Resources:
           - id: W28
             reason: Resource names are dynamically created using the stack id        
     Properties:
-      Description: Permissions needed by AppStream Image Builders to interact with Secrets Manager, S3, and Step Functions.
+      Description: Permissions needed by AppStream 2.0 image builders to interact with Secrets Manager, S3, and Step Functions.
       ManagedPolicyName: !Join
         - "_"
         - - "AS2_Automation_Windows_ImageBuilder_Policy"
