@@ -1,0 +1,502 @@
+c:\program files\amazon\photon\appcataloghelper\photonwindowsappcataloghelper.exe
+c:\program files\amazon\photon\appcataloghelper\photonwindowsapplauncher.dll
+c:\program files\amazon\photon\appcataloghelper\sqlite3.dll
+c:\program files\common files\microsoft shared\ink\tiptsf.dll
+c:\program files\common files\microsoft shared\ink\tpcps.dll
+c:\program files\common files\system\ole db\oledb32.dll
+c:\program files\nice\dcv\server\bin\amd_ags_x64.dll
+c:\program files\nice\dcv\server\bin\atk-1.0-0.dll
+c:\program files\nice\dcv\server\bin\avcodec-58.dll
+c:\program files\nice\dcv\server\bin\avutil-56.dll
+c:\program files\nice\dcv\server\bin\cairo.dll
+c:\program files\nice\dcv\server\bin\cairo-gobject.dll
+c:\program files\nice\dcv\server\bin\comerr64.dll
+c:\program files\nice\dcv\server\bin\dcvagent.exe
+c:\program files\nice\dcv\server\bin\epoxy-0.dll
+c:\program files\nice\dcv\server\bin\ffi-7.dll
+c:\program files\nice\dcv\server\bin\fontconfig.dll
+c:\program files\nice\dcv\server\bin\freetype.dll
+c:\program files\nice\dcv\server\bin\fribidi-0.dll
+c:\program files\nice\dcv\server\bin\gdk_pixbuf-2.0-0.dll
+c:\program files\nice\dcv\server\bin\gdk-3-vs15.dll
+c:\program files\nice\dcv\server\bin\gio-2.0-0.dll
+c:\program files\nice\dcv\server\bin\glib-2.0-0.dll
+c:\program files\nice\dcv\server\bin\gmodule-2.0-0.dll
+c:\program files\nice\dcv\server\bin\gobject-2.0-0.dll
+c:\program files\nice\dcv\server\bin\gssapi64.dll
+c:\program files\nice\dcv\server\bin\gstapp-1.0-0.dll
+c:\program files\nice\dcv\server\bin\gstaudio-1.0-0.dll
+c:\program files\nice\dcv\server\bin\gstbase-1.0-0.dll
+c:\program files\nice\dcv\server\bin\gstreamer-1.0-0.dll
+c:\program files\nice\dcv\server\bin\gsttag-1.0-0.dll
+c:\program files\nice\dcv\server\bin\gtk-3-vs15.dll
+c:\program files\nice\dcv\server\bin\iconv.dll
+c:\program files\nice\dcv\server\bin\icudt63.dll
+c:\program files\nice\dcv\server\bin\icuuc63.dll
+c:\program files\nice\dcv\server\bin\intl.dll
+c:\program files\nice\dcv\server\bin\json-glib-1.0-0.dll
+c:\program files\nice\dcv\server\bin\k5sprt64.dll
+c:\program files\nice\dcv\server\bin\krb5_64.dll
+c:\program files\nice\dcv\server\bin\libcrypto-1_1-x64.dll
+c:\program files\nice\dcv\server\bin\libdcv.dll
+c:\program files\nice\dcv\server\bin\libdcvaws.dll
+c:\program files\nice\dcv\server\bin\libdcvmetrics.dll
+c:\program files\nice\dcv\server\bin\liblz4.dll
+c:\program files\nice\dcv\server\bin\libpng16.dll
+c:\program files\nice\dcv\server\bin\libsasl.dll
+c:\program files\nice\dcv\server\bin\libx264-152.dll
+c:\program files\nice\dcv\server\bin\libxml2.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvamd.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvdd.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvdod.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvdrivecbfs.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvdts.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvffmpeg.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvgtk.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvlz4.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvnvapi.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvnvfbc.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvturbojpeg.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvwgc.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvwinapi.dll
+c:\program files\nice\dcv\server\bin\modules\libdcvwinprinter.dll
+c:\program files\nice\dcv\server\bin\nice_rlm.dll
+c:\program files\nice\dcv\server\bin\orc-0.4-0.dll
+c:\program files\nice\dcv\server\bin\pango-1.0-0.dll
+c:\program files\nice\dcv\server\bin\pangocairo-1.0-0.dll
+c:\program files\nice\dcv\server\bin\pangoft2-1.0-0.dll
+c:\program files\nice\dcv\server\bin\pangowin32-1.0-0.dll
+c:\program files\nice\dcv\server\bin\psl.dll
+c:\program files\nice\dcv\server\bin\soup-2.4-1.dll
+c:\program files\nice\dcv\server\bin\sqlite3.dll
+c:\program files\nice\dcv\server\bin\turbojpeg.dll
+c:\program files\nice\dcv\server\bin\wing-1.0-0.dll
+c:\program files\nice\dcv\server\bin\wshelp64.dll
+c:\program files\nice\dcv\server\bin\zlib1.dll
+c:\program files\notepad++\nppshell_06.dll
+c:\program files\putty\putty.exe
+c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.mf49f6405#\37ef3b252c3a773c916d40eb23b0ada7\microsoft.management.infrastructure.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.p1706cafe#\4314edb6cbf183359ca85ca08dc0079d\microsoft.powershell.commands.diagnostics.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.p521220ea#\f374a704755a974fb5bdaba637d72831\microsoft.powershell.commands.utility.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.p6f792626#\b1f0692961bb90823cb38bc911d40693\microsoft.powershell.security.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.pae3498d9#\8e490e59aa1a2c369ca44592f00f4b1b\microsoft.powershell.commands.management.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.pb378ec07#\5279f3621d16219b5240546fe11ac2b5\microsoft.powershell.consolehost.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.we0722664#\7c60c81713a30362cedaa00f71d19cbd\microsoft.wsman.management.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\mscorlib\c57f40f6d9c9679e64fd7db10567d19c\mscorlib.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\presentatio49d6fefe#\08b56a73d27c8df1e20a4f966efdba69\presentationframework-systemxml.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\presentatio4b37ff64#\c2075066d2d7752aa6fa8886e1404afc\presentationframework-systemxmllinq.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\presentatio5ae0f00f#\547aaaee24e011f8102551aff93079c2\presentationframework.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\presentatioaec034ca#\1c00db897254155dbcb99b3906f63f4f\presentationframework.aero2.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\presentationcore\25decba968b7720d0edfac68857332d8\presentationcore.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.comp46f2b404#\11275781164c0229db95c73725cd737a\system.componentmodel.dataannotations.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.confe64a9051#\922c5d3c90922b6207541563d185e227\system.configuration.install.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.configuration\5912242b380b18ff9daf257ac41be56b\system.configuration.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.core\d8351890d2dcbbf2a2c819e805b69836\system.core.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.data\5c5a818ed7fc45e2b901a99c66f399d4\system.data.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.dired13b18a9#\7afc3e5cbe8b05d3c8c143ef3f1df8e1\system.directoryservices.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.drawing\f59b6884a08db294185dc080a4b03b52\system.drawing.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.ente96d83b35#\612036371c546b737b89aec6f2bff3cf\system.enterpriseservices.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.ente96d83b35#\612036371c546b737b89aec6f2bff3cf\system.enterpriseservices.wrapper.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.manaa57fc8cc#\a3573c71863e7663ed119a0303ade853\system.management.automation.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.management\319a0d9503ee4d100dc96a09a626ae67\system.management.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.numerics\bcd428af62b755c5946744696877e5a6\system.numerics.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.runteb92aa12#\38debc986c32544badb541b07c505b2e\system.runtime.serialization.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.transactions\6cc625661f0d1cb555bec1c875342d4a\system.transactions.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.windows.forms\77db90768a2d6f5b383909cdb6d7e7e4\system.windows.forms.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.xaml\1d2a8fb6eac32b9ee42d6a2762f74730\system.xaml.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.xml.linq\5db5323defc2bc4b56cc38ecc5e9dbd3\system.xml.linq.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system.xml\7dce76b490ad0f0ace447049098d7ca5\system.xml.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\system\bade1e49e337e794ac75762bb3645e5d\system.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\uiautomationtypes\aabe433d6efdbff1b3a4fd01db4735fa\uiautomationtypes.ni.dll
+c:\windows\assembly\nativeimages_v4.0.30319_64\windowsbase\1728b7dd03b780517ad9beda8b616dcd\windowsbase.ni.dll
+c:\windows\explorer.exe
+c:\windows\microsoft.net\assembly\gac_64\system.data\v4.0_4.0.0.0__b77a5c561934e089\system.data.dll
+c:\windows\microsoft.net\assembly\gac_64\system.enterpriseservices\v4.0_4.0.0.0__b03f5f7f11d50a3a\system.enterpriseservices.wrapper.dll
+c:\windows\microsoft.net\assembly\gac_64\system.transactions\v4.0_4.0.0.0__b77a5c561934e089\system.transactions.dll
+c:\windows\microsoft.net\framework64\v4.0.30319\clr.dll
+c:\windows\microsoft.net\framework64\v4.0.30319\clrjit.dll
+c:\windows\microsoft.net\framework64\v4.0.30319\diasymreader.dll
+c:\windows\microsoft.net\framework64\v4.0.30319\mscoreei.dll
+c:\windows\microsoft.net\framework64\v4.0.30319\wpf\penimc2_v0400.dll
+c:\windows\microsoft.net\framework64\v4.0.30319\wpf\presentationnative_v0400.dll
+c:\windows\microsoft.net\framework64\v4.0.30319\wpf\wpfgfx_v0400.dll
+c:\windows\notepad.exe
+c:\windows\shellcomponents\taskflowui.dll
+c:\windows\shellcomponents\windowsinternal.composableshell.experiences.switcher.dll
+c:\windows\shellexperiences\quickactions.dll
+c:\windows\shellexperiences\startui.dll
+c:\windows\shellexperiences\tilecontrol.dll
+c:\windows\shellexperiences\windows.ui.actioncenter.dll
+c:\windows\system32\abovelockapphost.dll
+c:\windows\system32\acppage.dll
+c:\windows\system32\actioncenter.dll
+c:\windows\system32\actionmgr.dll
+c:\windows\system32\activationmanager.dll
+c:\windows\system32\actxprxy.dll
+c:\windows\system32\advapi32.dll
+c:\windows\system32\aepic.dll
+c:\windows\system32\amsi.dll
+c:\windows\system32\appcontracts.dll
+c:\windows\system32\apphelp.dll
+c:\windows\system32\applicationframe.dll
+c:\windows\system32\appointmentactivation.dll
+c:\windows\system32\appresolver.dll
+c:\windows\system32\appxdeploymentclient.dll
+c:\windows\system32\atlthunk.dll
+c:\windows\system32\audioses.dll
+c:\windows\system32\avrt.dll
+c:\windows\system32\batmeter.dll
+c:\windows\system32\bcp47langs.dll
+c:\windows\system32\bcp47mrm.dll
+c:\windows\system32\bcrypt.dll
+c:\windows\system32\bcryptprimitives.dll
+c:\windows\system32\biwinrt.dll
+c:\windows\system32\bthprops.cpl
+c:\windows\system32\cabinet.dll
+c:\windows\system32\cbfsconnectmntntf2017.dll
+c:\windows\system32\cdp.dll
+c:\windows\system32\cdpusersvc.dll
+c:\windows\system32\certca.dll
+c:\windows\system32\certenroll.dll
+c:\windows\system32\cfgmgr32.dll
+c:\windows\system32\cflapi.dll
+c:\windows\system32\chakra.dll
+c:\windows\system32\chartv.dll
+c:\windows\system32\clbcatq.dll
+c:\windows\system32\cldapi.dll
+c:\windows\system32\clipboardserver.dll
+c:\windows\system32\clipc.dll
+c:\windows\system32\coloradapterclient.dll
+c:\windows\system32\combase.dll
+c:\windows\system32\comdlg32.dll
+c:\windows\system32\coml2.dll
+c:\windows\system32\constraintindex.search.dll
+c:\windows\system32\container.dll
+c:\windows\system32\coremessaging.dll
+c:\windows\system32\coreshellextframework.dll
+c:\windows\system32\coreuicomponents.dll
+c:\windows\system32\cortana.persona.dll
+c:\windows\system32\crypt32.dll
+c:\windows\system32\cryptbase.dll
+c:\windows\system32\cryptdll.dll
+c:\windows\system32\cryptnet.dll
+c:\windows\system32\cryptngc.dll
+c:\windows\system32\cryptsp.dll
+c:\windows\system32\cscapi.dll
+c:\windows\system32\cscobj.dll
+c:\windows\system32\cscui.dll
+c:\windows\system32\d2d1.dll
+c:\windows\system32\d3d10warp.dll
+c:\windows\system32\d3d11.dll
+c:\windows\system32\d3d9.dll
+c:\windows\system32\d3dcompiler_47.dll
+c:\windows\system32\dataexchange.dll
+c:\windows\system32\daxexec.dll
+c:\windows\system32\dcomp.dll
+c:\windows\system32\desktopshellext.dll
+c:\windows\system32\devdispitemprovider.dll
+c:\windows\system32\devobj.dll
+c:\windows\system32\dhcpcsvc.dll
+c:\windows\system32\dhcpcsvc6.dll
+c:\windows\system32\directmanipulation.dll
+c:\windows\system32\dlnashext.dll
+c:\windows\system32\dnsapi.dll
+c:\windows\system32\dpapi.dll
+c:\windows\system32\dsparse.dll
+c:\windows\system32\dsreg.dll
+c:\windows\system32\dui70.dll
+c:\windows\system32\duser.dll
+c:\windows\system32\dwmapi.dll
+c:\windows\system32\dwrite.dll
+c:\windows\system32\dxgi.dll
+c:\windows\system32\dxp.dll
+c:\windows\system32\edgehtml.dll
+c:\windows\system32\edgeiso.dll
+c:\windows\system32\edgemanager.dll
+c:\windows\system32\edputil.dll
+c:\windows\system32\efswrt.dll
+c:\windows\system32\ehstorapi.dll
+c:\windows\system32\ehstorshell.dll
+c:\windows\system32\es.dll
+c:\windows\system32\esent.dll
+c:\windows\system32\ethernetmediamanager.dll
+c:\windows\system32\execmodelclient.dll
+c:\windows\system32\execmodelproxy.dll
+c:\windows\system32\explorerframe.dll
+c:\windows\system32\firewallapi.dll
+c:\windows\system32\fltlib.dll
+c:\windows\system32\fontgroupsoverride.dll
+c:\windows\system32\framedynos.dll
+c:\windows\system32\fwbase.dll
+c:\windows\system32\fwpuclnt.dll
+c:\windows\system32\gdi32.dll
+c:\windows\system32\gdi32full.dll
+c:\windows\system32\globcollationhost.dll
+c:\windows\system32\globinputhost.dll
+c:\windows\system32\gpapi.dll
+c:\windows\system32\hcproviders.dll
+c:\windows\system32\hhctrl.ocx
+c:\windows\system32\iconcodecservice.dll
+c:\windows\system32\icuin.dll
+c:\windows\system32\icuuc.dll
+c:\windows\system32\idstore.dll
+c:\windows\system32\ieframe.dll
+c:\windows\system32\ieproxy.dll
+c:\windows\system32\iertutil.dll
+c:\windows\system32\imagehlp.dll
+c:\windows\system32\imapi2.dll
+c:\windows\system32\imm32.dll
+c:\windows\system32\inputhost.dll
+c:\windows\system32\inputswitch.dll
+c:\windows\system32\iphlpapi.dll
+c:\windows\system32\kernel.appcore.dll
+c:\windows\system32\kernel32.dll
+c:\windows\system32\kernelbase.dll
+c:\windows\system32\licensemanagerapi.dll
+c:\windows\system32\linkinfo.dll
+c:\windows\system32\logoncli.dll
+c:\windows\system32\mlang.dll
+c:\windows\system32\mmdevapi.dll
+c:\windows\system32\mobilenetworking.dll
+c:\windows\system32\modernexecserver.dll
+c:\windows\system32\mpr.dll
+c:\windows\system32\mrmcorer.dll
+c:\windows\system32\msasn1.dll
+c:\windows\system32\mscms.dll
+c:\windows\system32\mscoree.dll
+c:\windows\system32\msctf.dll
+c:\windows\system32\msctfmonitor.dll
+c:\windows\system32\msctfui.dll
+c:\windows\system32\msdart.dll
+c:\windows\system32\msftedit.dll
+c:\windows\system32\msi.dll
+c:\windows\system32\msimg32.dll
+c:\windows\system32\msimtf.dll
+c:\windows\system32\msiso.dll
+c:\windows\system32\mskeyprotect.dll
+c:\windows\system32\mssrch.dll
+c:\windows\system32\msutb.dll
+c:\windows\system32\msvcp_win.dll
+c:\windows\system32\msvcp110_win.dll
+c:\windows\system32\msvcp120_clr0400.dll
+c:\windows\system32\msvcp140.dll
+c:\windows\system32\msvcr120_clr0400.dll
+c:\windows\system32\msvcrt.dll
+c:\windows\system32\mswb7.dll
+c:\windows\system32\mswsock.dll
+c:\windows\system32\msxml6.dll
+c:\windows\system32\ncrypt.dll
+c:\windows\system32\ncryptprov.dll
+c:\windows\system32\ncryptsslp.dll
+c:\windows\system32\netapi32.dll
+c:\windows\system32\netprofm.dll
+c:\windows\system32\netutils.dll
+c:\windows\system32\networkexplorer.dll
+c:\windows\system32\networkuxbroker.dll
+c:\windows\system32\ninput.dll
+c:\windows\system32\notificationcontroller.dll
+c:\windows\system32\notificationcontrollerps.dll
+c:\windows\system32\notificationplatformcomponent.dll
+c:\windows\system32\npmproxy.dll
+c:\windows\system32\npsm.dll
+c:\windows\system32\nsi.dll
+c:\windows\system32\ntasn1.dll
+c:\windows\system32\ntdll.dll
+c:\windows\system32\ntmarta.dll
+c:\windows\system32\ntshrui.dll
+c:\windows\system32\ole32.dll
+c:\windows\system32\oleacc.dll
+c:\windows\system32\oleaut32.dll
+c:\windows\system32\ondemandconnroutehelper.dll
+c:\windows\system32\onecorecommonproxystub.dll
+c:\windows\system32\onecoreuapcommonproxystub.dll
+c:\windows\system32\pcacli.dll
+c:\windows\system32\pdh.dll
+c:\windows\system32\personax.dll
+c:\windows\system32\photometadatahandler.dll
+c:\windows\system32\playtodevice.dll
+c:\windows\system32\pnidui.dll
+c:\windows\system32\policymanager.dll
+c:\windows\system32\portabledeviceapi.dll
+c:\windows\system32\portabledevicetypes.dll
+c:\windows\system32\powrprof.dll
+c:\windows\system32\prnfldr.dll
+c:\windows\system32\profapi.dll
+c:\windows\system32\profext.dll
+c:\windows\system32\propsys.dll
+c:\windows\system32\psapi.dll
+c:\windows\system32\quickactionsdatamodel.dll
+c:\windows\system32\quiethours.dll
+c:\windows\system32\rasadhlp.dll
+c:\windows\system32\rasapi32.dll
+c:\windows\system32\rasman.dll
+c:\windows\system32\regapi.dll
+c:\windows\system32\rmclient.dll
+c:\windows\system32\rometadata.dll
+c:\windows\system32\rpcrt4.dll
+c:\windows\system32\rsaenh.dll
+c:\windows\system32\rtmediaframe.dll
+c:\windows\system32\rtutils.dll
+c:\windows\system32\rundll32.exe
+c:\windows\system32\runtimebroker.exe
+c:\windows\system32\samcli.dll
+c:\windows\system32\samlib.dll
+c:\windows\system32\sas.dll
+c:\windows\system32\schannel.dll
+c:\windows\system32\sechost.dll
+c:\windows\system32\secur32.dll
+c:\windows\system32\settingsenvironment.desktop.dll
+c:\windows\system32\settingsynccore.dll
+c:\windows\system32\setupapi.dll
+c:\windows\system32\sfc.dll
+c:\windows\system32\sfc_os.dll
+c:\windows\system32\sharehost.dll
+c:\windows\system32\shcore.dll
+c:\windows\system32\shdocvw.dll
+c:\windows\system32\shell32.dll
+c:\windows\system32\shellcommoncommonproxystub.dll
+c:\windows\system32\shellexperiences\windows.ui.shell.sharedutilities.dll
+c:\windows\system32\shlwapi.dll
+c:\windows\system32\shutdownux.dll
+c:\windows\system32\sihost.exe
+c:\windows\system32\slc.dll
+c:\windows\system32\smartscreen.exe
+c:\windows\system32\smartscreenps.dll
+c:\windows\system32\sndvolsso.dll
+c:\windows\system32\speech_onecore\common\sapi_onecore.dll
+c:\windows\system32\sppc.dll
+c:\windows\system32\srchadmin.dll
+c:\windows\system32\srpapi.dll
+c:\windows\system32\srvcli.dll
+c:\windows\system32\sspicli.dll
+c:\windows\system32\starttiledata.dll
+c:\windows\system32\staterepository.core.dll
+c:\windows\system32\stobject.dll
+c:\windows\system32\storageusage.dll
+c:\windows\system32\structuredquery.dll
+c:\windows\system32\svchost.exe
+c:\windows\system32\sxs.dll
+c:\windows\system32\synccenter.dll
+c:\windows\system32\syncreg.dll
+c:\windows\system32\systemsettings.datamodel.dll
+c:\windows\system32\tabbtn.dll
+c:\windows\system32\tabbtnex.dll
+c:\windows\system32\taskhostw.exe
+c:\windows\system32\taskschd.dll
+c:\windows\system32\tbs.dll
+c:\windows\system32\tdlmigration.dll
+c:\windows\system32\textinputframework.dll
+c:\windows\system32\themeui.dll
+c:\windows\system32\threadpoolwinrt.dll
+c:\windows\system32\thumbcache.dll
+c:\windows\system32\tiledatarepository.dll
+c:\windows\system32\tokenbinding.dll
+c:\windows\system32\tquery.dll
+c:\windows\system32\twext.dll
+c:\windows\system32\twinapi.appcore.dll
+c:\windows\system32\twinapi.dll
+c:\windows\system32\twinui.appcore.dll
+c:\windows\system32\twinui.dll
+c:\windows\system32\twinui.pcshell.dll
+c:\windows\system32\ucrtbase.dll
+c:\windows\system32\uiamanager.dll
+c:\windows\system32\uianimation.dll
+c:\windows\system32\uiautomationcore.dll
+c:\windows\system32\uiribbon.dll
+c:\windows\system32\urlmon.dll
+c:\windows\system32\user32.dll
+c:\windows\system32\userenv.dll
+c:\windows\system32\usermgrcli.dll
+c:\windows\system32\usermgrproxy.dll
+c:\windows\system32\uxtheme.dll
+c:\windows\system32\vaultcli.dll
+c:\windows\system32\vcruntime140.dll
+c:\windows\system32\version.dll
+c:\windows\system32\webio.dll
+c:\windows\system32\wer.dll
+c:\windows\system32\werconcpl.dll
+c:\windows\system32\wevtapi.dll
+c:\windows\system32\win32u.dll
+c:\windows\system32\winbrand.dll
+c:\windows\system32\wincorlib.dll
+c:\windows\system32\windowmanagement.dll
+c:\windows\system32\windows.applicationmodel.background.systemeventsbroker.dll
+c:\windows\system32\windows.applicationmodel.background.timebroker.dll
+c:\windows\system32\windows.applicationmodel.dll
+c:\windows\system32\windows.cloudstore.dll
+c:\windows\system32\windows.cloudstore.schema.shell.dll
+c:\windows\system32\windows.cortana.desktop.dll
+c:\windows\system32\windows.cortana.onecore.dll
+c:\windows\system32\windows.cortana.pal.desktop.dll
+c:\windows\system32\windows.cortana.proxystub.dll
+c:\windows\system32\windows.devices.enumeration.dll
+c:\windows\system32\windows.devices.radios.dll
+c:\windows\system32\windows.globalization.dll
+c:\windows\system32\windows.globalization.fontgroups.dll
+c:\windows\system32\windows.graphics.dll
+c:\windows\system32\windows.immersiveshell.serviceprovider.dll
+c:\windows\system32\windows.internal.shell.broker.dll
+c:\windows\system32\windows.media.speech.dll
+c:\windows\system32\windows.networking.connectivity.dll
+c:\windows\system32\windows.security.authentication.onlineid.dll
+c:\windows\system32\windows.security.authentication.web.core.dll
+c:\windows\system32\windows.shell.bluelightreduction.dll
+c:\windows\system32\windows.shell.servicehostbuilder.dll
+c:\windows\system32\windows.staterepository.dll
+c:\windows\system32\windows.staterepositoryclient.dll
+c:\windows\system32\windows.staterepositoryps.dll
+c:\windows\system32\windows.storage.applicationdata.dll
+c:\windows\system32\windows.storage.dll
+c:\windows\system32\windows.storage.search.dll
+c:\windows\system32\windows.system.launcher.dll
+c:\windows\system32\windows.system.profile.hardwareid.dll
+c:\windows\system32\windows.system.profile.systemid.dll
+c:\windows\system32\windows.ui.appdefaults.dll
+c:\windows\system32\windows.ui.core.textinput.dll
+c:\windows\system32\windows.ui.dll
+c:\windows\system32\windows.ui.immersive.dll
+c:\windows\system32\windows.ui.input.inking.dll
+c:\windows\system32\windows.ui.shell.dll
+c:\windows\system32\windows.ui.xaml.controls.dll
+c:\windows\system32\windows.ui.xaml.dll
+c:\windows\system32\windows.web.dll
+c:\windows\system32\windows.web.http.dll
+c:\windows\system32\windowscodecs.dll
+c:\windows\system32\winhttp.dll
+c:\windows\system32\wininet.dll
+c:\windows\system32\winlangdb.dll
+c:\windows\system32\winmm.dll
+c:\windows\system32\winmmbase.dll
+c:\windows\system32\winnsi.dll
+c:\windows\system32\winrttracing.dll
+c:\windows\system32\winspool.drv
+c:\windows\system32\winsqlite3.dll
+c:\windows\system32\winsta.dll
+c:\windows\system32\wintrust.dll
+c:\windows\system32\wintypes.dll
+c:\windows\system32\wisp.dll
+c:\windows\system32\wkscli.dll
+c:\windows\system32\wldap32.dll
+c:\windows\system32\wldp.dll
+c:\windows\system32\wlidprov.dll
+c:\windows\system32\wmiclnt.dll
+c:\windows\system32\wpdshserviceobj.dll
+c:\windows\system32\wpnapps.dll
+c:\windows\system32\wpnclient.dll
+c:\windows\system32\wpncore.dll
+c:\windows\system32\wpnuserservice.dll
+c:\windows\system32\ws2_32.dll
+c:\windows\system32\wtsapi32.dll
+c:\windows\system32\xmllite.dll
+c:\windows\system32\zipfldr.dll
+c:\windows\systemapps\microsoft.windows.cortana_cw5n1h2txyewy\bingconfigurationclient.dll
+c:\windows\systemapps\microsoft.windows.cortana_cw5n1h2txyewy\cortana.core.dll
+c:\windows\systemapps\microsoft.windows.cortana_cw5n1h2txyewy\cortanaapi.dll
+c:\windows\systemapps\microsoft.windows.cortana_cw5n1h2txyewy\cortanaapi.proxystub.dll
+c:\windows\systemapps\microsoft.windows.cortana_cw5n1h2txyewy\remindersui.dll
+c:\windows\systemapps\microsoft.windows.cortana_cw5n1h2txyewy\searchui.exe
+c:\windows\systemapps\shellexperiencehost_cw5n1h2txyewy\shellexperiencehost.exe
+c:\windows\winsxs\amd64_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.9518_none_08e07c8fa840efbe\msvcr90.dll
+c:\windows\winsxs\amd64_microsoft.windows.common-controls_6595b64144ccf1df_5.82.17763.1282_none_6d05534259faab9e\comctl32.dll
+c:\windows\winsxs\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.17763.1282_none_de75b6f253473c0f\comctl32.dll
+c:\windows\winsxs\amd64_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.17763.1282_none_0f60a9d7add9b5dd\gdiplus.dll
