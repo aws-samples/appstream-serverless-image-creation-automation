@@ -4,7 +4,7 @@ Description: >-
 Parameters:
   SourceS3Bucket:
     Type: String
-    Description: S3 Bucket name that contains the files required to import and execute this AppStream Automation WorkShop. (Lambda functions and layer zip files)
+    Description: S3 Bucket name that contains the files required to import and  build this AppStream 2.0 automation workflow. (Lambda functions and layer zip files)
   SNSEmailSubscriptionEndPoint:
     Type: String
     Description: The email address that receives the automation notifications.
@@ -21,7 +21,7 @@ Parameters:
     Description: Subnet ID where Lambda functions will reside.
   AS2DefaultImage:
     Type: String
-    Description: Default Windows image to use when creating the AppStream Image Builder instance. For non-domain joined Image Builders, input your customized image with the Session Script here. See Workshop documentation for instructions on creating this.
+    Description: Default Windows image to use when creating the AppStream Image Builder instance. For non-domain joined Image Builders, input your customized image with the Session Script here. See blog documentation for instructions on creating this.
     Default: AppStream-WinServer2019-03-03-2022
   DefaultDomain:
     Type: String
@@ -54,7 +54,7 @@ Resources:
           Key: AS2_Image_Automation
           Value: v1
   WorkShopS3Bucket: 
-    Type: "AWS::S3::Bucket" #creates a bucket with a semi-random name as2-automation-workshop-XXXXXX
+    Type: "AWS::S3::Bucket" #creates a bucket with a semi-random name as2-automation-blog-XXXXXX
     Metadata:
       cfn_nag:
         rules_to_suppress:
@@ -65,7 +65,7 @@ Resources:
     Properties:
       BucketName: !Join
         - "-"
-        - - "as2-automation-workshop"
+        - - "as2-automation-blog"
           - !Select
             - 0
             - !Split
@@ -100,7 +100,7 @@ Resources:
                 - !Split
                   - "/"
                   - !Ref "AWS::StackId"      
-      Description: Contains pywinrm libraries. Dependencies for the AppStream 2.0 automation workshop.
+      Description: Contains pywinrm libraries. Dependencies for the AppStream 2.0 automation.
       Content:
         S3Bucket:
           Ref: SourceS3Bucket
@@ -738,7 +738,7 @@ Resources:
         Fn::Sub:
           |-
             {
-              "Comment": "AS2 Image Automation WorkShop Step Function",
+              "Comment": "AS2 Windows Image Automation Step Function",
               "StartAt": "Create Image Builder",
               "States": {
                 "Create Image Builder": {
@@ -992,6 +992,6 @@ Resources:
               } 
 Outputs:
   WorkShopS3BucketName:
-    Description: The bucket in S3 to upload WorkShop execution resources including installation packages and run_image_assistant script.
+    Description: The bucket in S3 to upload automation execution resources including installation installation packages.
     Value: 
       Ref: WorkShopS3Bucket
