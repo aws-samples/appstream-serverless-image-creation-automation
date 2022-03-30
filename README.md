@@ -36,12 +36,13 @@ Default values were entered when the automation was deployed from CloudFormation
 - **ImageBuilderDomain**: The Active Directory domain to join the image builder instance to. Must be [configured in the AppStream console](https://docs.aws.amazon.com/appstream2/latest/developerguide/active-directory.html).
 - **ImageBuilderOU:** The OU to place the image builder instance inside of, in distinguished name format. Must be [configured in the AppStream console](https://docs.aws.amazon.com/appstream2/latest/developerguide/active-directory.html).
 - **ImageBuilderInternetAccess**: true or false, choice to provide default [internet access](https://docs.aws.amazon.com/appstream2/latest/developerguide/internet-access.html) to the image builder instance. You must specify a public subnet for ImageBuilderSubnet if using default internet access.
+- **ImageBuilderExtraCommands**: An array of PowerShell commands that will be executed on the image builder.
 - **ImageTags**: The [tags](https://docs.aws.amazon.com/appstream2/latest/developerguide/tagging-basic.html) to apply to the generated AppStream 2.0 image. This should be entered as a list of key-value pairs seperated by spaces: tag1 value1 tag2 value2
 - **UseLatestAgent**: true or false, specify whether to pin the image to the version of the AppStream 2.0 agent that is currently installed, or to always use the latest agent version.
 - **NotifyARN**: ARN of the SNS topic that completion email will be sent to.
 - **PackageS3Bucket**: the bucket name where the application silent installation packages were uploaded. If you override the default deployed by the CloudFormation template, you must update the image builders IAM policy to allow access to this bucket. (AS2_Automation_Windows_ImageBulder_Role_#######)
 
-An example JSON statement used to start an execution of the automation Step Function can be found below. In this example, several of the above parameters are entered to control the behavior of the automation. The image will be named "AS2_Automation_Windows_Example_TIMESTAMP", uses a stream.standard.large instance size, will ensure the latest version of the AppStream agent is installed, tags the image, and places the image builder into the Image_Builders OU in the Active Direcotry domain yourdomain.int.
+An example JSON statement used to start an execution of the automation Step Function can be found below. In this example, several of the above parameters are entered to control the behavior of the automation. The resulting image will be named "AS2_Automation_Windows_Example_TIMESTAMP", uses a stream.standard.large instance size, and will ensure the latest version of the AppStream agent is installed. It also tags the image, places the image builder into the Image_Builders OU in the Active Direcotry domain yourdomain.int, and runs two PowerShell commands to set two registry key values.
 ```
 {
     "ImageBuilderName": "AS2_Automation_Windows_Example",
@@ -51,7 +52,11 @@ An example JSON statement used to start an execution of the automation Step Func
     "ImageBuilderOU": "OU=Image_Builders,OU=AppStream,DC=yourdomain,DC=int",
     "UseLatestAgent": true,
     "ImageTags": "'tag1' 'value1' 'tag2' 'value2'",
-    "DeleteBuilder": true
+    "DeleteBuilder": true,
+    "ImageBuilderExtraCommands": [
+      "New-Item -Path 'HKLM:/Software/AS2-Automation-Pipeline' -Force;New-ItemProperty -Path 'HKLM:/Software/AS2-Automation-Pipeline' -Name 'TestValue' -Value 'Success' -PropertyType String -Force",
+      "New-ItemProperty -Path 'HKLM:/Software/AS2-Automation-Pipeline' -Name 'TestValue2' -Value 'Success' -PropertyType String -Force"
+    ]
 }
 ```
 
