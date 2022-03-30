@@ -107,7 +107,12 @@ def lambda_handler(event, context):
     if 'DeployMethod' in event :
         DeployMethod = event['DeployMethod']
     else :
-        DeployMethod = os.environ['Default_Method']   
+        DeployMethod = os.environ['Default_Method']
+
+    if 'ImageBuilderExtraCommands' in event :
+        ImageBuilderExtraCommands = event['ImageBuilderCommands']
+    else :
+        ImageBuilderExtraCommands = False        
 
     if 'PackageS3Bucket' in event :
         Package_S3_Bucket = event['PackageS3Bucket']
@@ -239,6 +244,7 @@ def lambda_handler(event, context):
             'ImageBuilderDisplayName' : IB_DisplayName,
             'ImageBuilderDescription' : IB_Description,
             'ImageBuilderInternetAccess' : IB_Internet,
+            'ImageBuilderExtraCommands' : ImageBuilderExtraCommands,            
             'ImageOutputPrefix' : IB_Prefix,
             'ImageTags' : Image_Tags,
             'UseLatestAgent' : UseLatestAgent,

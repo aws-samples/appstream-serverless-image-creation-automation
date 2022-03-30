@@ -46,6 +46,18 @@ def lambda_handler(event, context):
     except Exception as e :
         logger.error(e)
         logger.info("Unable to find IP address for Image Builder instance.")
+        
+    # Retrieve commands to run on image builder from event data
+    try :
+        commandArray = event['AutomationParameters']['ImageBuilderExtraCommands']
+        if commandArray :
+            logger.info("Installation command array found in event data: %s.", commandArray)
+        else :
+            logger.info("No additional commands to perform on the image builder in event data.")
+    except Exception as e2 :
+        logger.error(e2)
+        logger.info("Error retreiving command array from event data: %s", e2)     
+        
 
     # Read image builder administrator username and password from Secrets Manager
     logger.info("Retreiving instance username and password from Secrets Manager.")
@@ -72,6 +84,11 @@ def lambda_handler(event, context):
     # Create temp directory
     logger.info("Creating temp directory.")
     result = session.run_ps("New-Item -Path c:\\ -Name \"temp\" -ItemType \"directory\" -force")
+
+    # If an array of PowerShell commands were passed to the Step Function, run them
+    if commandArray:
+        for cmd in commandArray:
+            session.run_ps(cmd)
 
 
     ############################################################
