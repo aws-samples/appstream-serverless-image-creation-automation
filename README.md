@@ -24,6 +24,7 @@ For any parameters not specified in the Step Function execution JSON, a default 
 
 Default values were entered when the automation was deployed from CloudFormation. These values are used as inputs into the Step Function running the automation and the below parameters can be passed into the Step Function to override them. Options include:
 - **ImageBuilderName**: The name to use when creating the image builder instance.
+- **ImageBuilderDisplayName**: The display name for the new image builder.
 - **ImageBuilderType**: The instance type/class to use. See the AppStream 2.0 [pricing page](https://aws.amazon.com/appstream2/pricing/) for a list of instance types available.
 - **ImageBuilderDescription**: The description associated with the image metadata.
 - **ImageOutputPrefix**: The name of the image created from the automation; a timestamp is automatically appended to the end.
