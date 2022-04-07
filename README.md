@@ -26,7 +26,6 @@ Default values were entered when the automation was deployed from CloudFormation
 - **ImageBuilderName**: The name to use when creating the image builder instance.
 - **ImageBuilderType**: The instance type/class to use. See the AppStream 2.0 [pricing page](https://aws.amazon.com/appstream2/pricing/) for a list of instance types available.
 - **ImageBuilderDescription**: The description associated with the image metadata.
-- **ImageBuilderType**: The instance type of the image builder.
 - **ImageOutputPrefix**: The name of the image created from the automation; a timestamp is automatically appended to the end.
 - **DeleteBuilder**: true or false, option to retain or delete the image builder once the automation is complete. (Default is false)
 - **ImageBuilderImage**: Name of the base image to use when creating the image builder.
