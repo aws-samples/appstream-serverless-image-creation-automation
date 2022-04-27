@@ -120,7 +120,6 @@ Below is the relevant section of PowerShell code in the sample install scripts t
 
 
 # Amazon AppStream 2.0 Serverless Image Automation for Linux
-### *** Coming Soon. ***
 
 In 2021, Amazon AppStream 2.0 introduced support for Amazon Linux 2 based images and fleets. This brought the same ability to securely stream Linux applications and desktops to users that had been available for Windows based workloads.
 
