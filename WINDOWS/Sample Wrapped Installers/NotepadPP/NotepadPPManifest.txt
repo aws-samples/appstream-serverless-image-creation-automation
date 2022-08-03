@@ -504,3 +504,22 @@ c:\windows\systemapps\shellexperiencehost_cw5n1h2txyewy\shellexperiencehost.exe
 c:\windows\winsxs\amd64_microsoft.windows.common-controls_6595b64144ccf1df_5.82.17763.1282_none_6d05534259faab9e\comctl32.dll
 c:\windows\winsxs\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.17763.1282_none_de75b6f253473c0f\comctl32.dll
 c:\windows\winsxs\amd64_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.17763.1282_none_0f60a9d7add9b5dd\gdiplus.dll
+C:\Program Files\Notepad++\nppshell_06.dll
+C:\Program Files\Notepad++\autoCompletion
+C:\Program Files\Notepad++\Notepad++\localization
+C:\Program Files\Notepad++\Notepad++\plugins
+C:\Program Files\Notepad++\Notepad++\themes
+C:\Program Files\Notepad++\Notepad++\updater
+C:\Program Files\Notepad++\Notepad++\userDefineLangs
+C:\Program Files\Notepad++\Notepad++\change.log
+C:\Program Files\Notepad++\Notepad++\config.xml
+C:\Program Files\Notepad++\Notepad++\contextMenu.xml
+C:\Program Files\Notepad++\Notepad++\doLocalConf.xml
+C:\Program Files\Notepad++\Notepad++\functionList.xml
+C:\Program Files\Notepad++\Notepad++\langs.model.xml
+C:\Program Files\Notepad++\Notepad++\license.txt
+C:\Program Files\Notepad++\Notepad++\notepad++.exe
+C:\Program Files\Notepad++\Notepad++\readme.txt
+C:\Program Files\Notepad++\Notepad++\SciLexer.dll
+C:\Program Files\Notepad++\Notepad++\shortcuts.xml
+C:\Program Files\Notepad++\Notepad++\stylers.model.xml
