@@ -73,7 +73,6 @@ c:\program files\nice\dcv\server\bin\turbojpeg.dll
 c:\program files\nice\dcv\server\bin\wing-1.0-0.dll
 c:\program files\nice\dcv\server\bin\wshelp64.dll
 c:\program files\nice\dcv\server\bin\zlib1.dll
-c:\program files\notepad++\nppshell_06.dll
 c:\program files\putty\putty.exe
 c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.mf49f6405#\37ef3b252c3a773c916d40eb23b0ada7\microsoft.management.infrastructure.ni.dll
 c:\windows\assembly\nativeimages_v4.0.30319_64\microsoft.p1706cafe#\4314edb6cbf183359ca85ca08dc0079d\microsoft.powershell.commands.diagnostics.ni.dll
