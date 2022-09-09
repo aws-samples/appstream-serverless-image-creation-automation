@@ -50,12 +50,7 @@ Resources:
       CompatibleRuntimes:
         - python3.8
   SNSTopic:
-    Type: AWS::SNS::Topic
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W47
-            reason: For this blog we will not specify the KMS key explicitly.         
+    Type: AWS::SNS::Topic     
     Properties:
       TopicName: !Join
         - "_"
@@ -69,6 +64,7 @@ Resources:
                 - !Split
                   - "/"
                   - !Ref "AWS::StackId"
+      KmsMasterKeyId: "alias/aws/sns"                    
   SNSTopicPolicy:
     Type: AWS::SNS::TopicPolicy
     Properties:
@@ -96,14 +92,7 @@ Resources:
       TopicArn:
         Ref: SNSTopic
   LambdaFunctionSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W5
-            reason: Lambda needs access to internet, hence the open cidr
-          - id: W28
-            reason: Resource names are dynamically created using the stack id       
+    Type: AWS::EC2::SecurityGroup     
     Properties:
         GroupDescription: Allows AppStream 2.0 Linux Automation Lambda functions to communicate with image builder instances and AWS services.
         GroupName: !Join
@@ -148,14 +137,7 @@ Resources:
       GroupId:
         Ref: LambdaFunctionSecurityGroup                           
   ImageBuilderSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W5
-            reason: Image builder needs access to internet, hence the open cidr
-          - id: W28
-            reason: Resource names are dynamically created using the stack id       
+    Type: AWS::EC2::SecurityGroup     
     Properties:
         GroupDescription: Allows AppStream 2.0 Linux automation Lambda functions to communicate with image builder instances, and image builders to talk to outside resources and AWS services.
         GroupName: !Join
@@ -205,12 +187,7 @@ Resources:
       GroupId:
         Ref: ImageBuilderSecurityGroup                
   LambdaFunctionIAMRole:
-    Type: 'AWS::IAM::Role'
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W28
-            reason: Resource names are dynamically created using the stack id    
+    Type: 'AWS::IAM::Role' 
     Properties: 
       RoleName: !Join
         - "_"
@@ -236,14 +213,7 @@ Resources:
             Action: 
               - 'sts:AssumeRole'
   LambdaFunctionIAMPolicy:
-    Type: 'AWS::IAM::ManagedPolicy'
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W13
-            reason: Wildcard used due to dynamic nature of creating image builders by the automation        
-          - id: W28
-            reason: Resource names are dynamically created using the stack id    
+    Type: 'AWS::IAM::ManagedPolicy'   
     Properties:
       Description: Permissions needed by Lambda functions to interact with AppStream 2.0 image builders and service.
       ManagedPolicyName: !Join
@@ -299,12 +269,7 @@ Resources:
       Roles:
         - !Ref LambdaFunctionIAMRole
   StepFunctionIAMRole:
-    Type: 'AWS::IAM::Role'
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W28
-            reason: Resource names are dynamically created using the stack id        
+    Type: 'AWS::IAM::Role'      
     Properties: 
       RoleName: !Join
         - "_"
@@ -330,14 +295,7 @@ Resources:
             Action: 
               - 'sts:AssumeRole'
   StepFunctionIAMPolicy:
-    Type: 'AWS::IAM::ManagedPolicy'
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W13
-            reason: Wildcard used due to dynamic nature of creating image builders by the automation            
-          - id: W28
-            reason: Resource names are dynamically created using the stack id        
+    Type: 'AWS::IAM::ManagedPolicy'      
     Properties:
       Description: Permissions needed by Step Function functions to interact with AppStream 2.0 image builders, AppStream 2.0 service, and SNS.
       ManagedPolicyName: !Join
@@ -389,12 +347,7 @@ Resources:
       Roles:
         - !Ref StepFunctionIAMRole
   ImageBuilderIAMRole:
-    Type: 'AWS::IAM::Role'
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W28
-            reason: Resource names are dynamically created using the stack id        
+    Type: 'AWS::IAM::Role'      
     Properties: 
       RoleName: !Join
         - "_"
@@ -420,14 +373,7 @@ Resources:
             Action: 
               - 'sts:AssumeRole'
   ImageBuilderIAMPolicy:
-    Type: 'AWS::IAM::ManagedPolicy'
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W13
-            reason: Wildcard used due to dynamic nature of creating image builders by the automation            
-          - id: W28
-            reason: Resource names are dynamically created using the stack id         
+    Type: 'AWS::IAM::ManagedPolicy'        
     Properties:
       Description: Permissions needed by AppStream 2.0 Linux image builders to interact with Step Functions.
       ManagedPolicyName: !Join
@@ -454,16 +400,7 @@ Resources:
       Roles:
         - !Ref ImageBuilderIAMRole
   LambdaFunction01CreateBuilder:
-    Type: AWS::Lambda::Function
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W58
-            reason: The IAM policy assigned to the function does grant permissions to write CloudWatch logs         
-          - id: W89
-            reason: This function does not need a VPC.         
-          - id: W92
-            reason: There is no need to reserve simultaneous executions for the functions in this template.      
+    Type: AWS::Lambda::Function     
     Properties:
       FunctionName: !Join
         - "_"
@@ -503,14 +440,7 @@ Resources:
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
       Timeout: 30
   LambdaFunction02ScriptedInstall:
-    Type: AWS::Lambda::Function
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W58
-            reason: The IAM policy assigned to the function does grant permissions to write CloudWatch logs           
-          - id: W92
-            reason: There is no need to reserve simultaneous executions for the functions in this template.      
+    Type: AWS::Lambda::Function     
     Properties:
       FunctionName: !Join
         - "_"
@@ -545,14 +475,7 @@ Resources:
       - LambdaFunctionIAMRole
       - LambdaFunctionIAMPolicy
   LambdaFunction03RunImageAssistant:
-    Type: AWS::Lambda::Function
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W58
-            reason: The IAM policy assigned to the function does grant permissions to write CloudWatch logs           
-          - id: W92
-            reason: There is no need to reserve simultaneous executions for the functions in this template.      
+    Type: AWS::Lambda::Function   
     Properties:
       FunctionName: !Join
         - "_"
@@ -587,16 +510,7 @@ Resources:
       - LambdaFunctionIAMRole
       - LambdaFunctionIAMPolicy
   LambdaFunction04ImageNotification:
-    Type: AWS::Lambda::Function
-    Metadata:
-      cfn_nag:
-        rules_to_suppress:
-          - id: W58
-            reason: The IAM policy assigned to the function does grant permissions to write CloudWatch logs         
-          - id: W89
-            reason: This function does not need a VPC.         
-          - id: W92
-            reason: There is no need to reserve simultaneous executions for the functions in this template.      
+    Type: AWS::Lambda::Function     
     Properties:
       FunctionName: !Join
         - "_"
