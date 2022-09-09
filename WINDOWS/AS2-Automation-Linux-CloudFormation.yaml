@@ -1,0 +1,819 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  This template creates an end-to-end Amazon AppStream 2.0 imaging process for Amazon Linux 2 based images, utilizing AWS Lambda and AWS Step Functions. 
+Parameters:
+  SourceS3Bucket:
+    Type: String
+    Description: S3 Bucket name that contains the files required to import and execute this AppStream 2.0 automation workflow. (Lambda functions and layer zip files)
+  SNSEmailSubscriptionEndPoint:
+    Type: String
+    Description: The email address that receives the automation notifications.
+    Default: username@domain.com
+  AS2VPCId:
+    Type: 'AWS::EC2::VPC::Id'
+    Description: VPCID where AppStream 2.0 image builders and Lambda functions will reside.
+    ConstraintDescription: Must be the VPC Id of an existing Virtual Private Cloud.
+  AS2VPCSubnet1:
+    Type: 'AWS::EC2::Subnet::Id'
+    Description: Subnet ID where Lambda functions will reside, also the default subnet for image builders. Private subnet with NAT gateway recommended.
+  AS2VPCSubnet2:
+    Type: 'AWS::EC2::Subnet::Id'
+    Description: Subnet ID where Lambda functions will reside.
+  AS2DefaultImage:
+    Type: String
+    Description: Default Linux image to use when creating the AppStream 2.0 image builder instance. Input the name of your customized image with the embedded SSH key here. See blog documentation for instructions on creating this.
+    Default: Linux_Automation_Base
+  AS2DefaultSSHKeyARN:
+    Type: String
+    Description: ARN of the AWS Systems Manager parameter containing the SSH key embedded in your customized Linux image. See blog documentation for instructions on creating this. (arn:aws:ssm:us-east-2:123456789012:parameter/as2_automation/rsakey)  
+Resources:
+  LambdaFunctionLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      LayerName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_paramiko"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"      
+      Description: Contains paramiko libraries. Dependencies for the AppStream 2.0 automation workshop.
+      Content:
+        S3Bucket:
+          Ref: SourceS3Bucket
+        S3Key: Lambda_Layer_paramiko38_libraries.zip
+      CompatibleRuntimes:
+        - python3.8
+  SNSTopic:
+    Type: AWS::SNS::Topic
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W47
+            reason: For this blog we will not specify the KMS key explicitly.         
+    Properties:
+      TopicName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_Notification"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"
+  SNSTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Id: SNSTopicPolicy
+        Version: '2012-10-17'
+        Statement:
+          - Sid: "PublishEventsToSNSTopic"
+            Effect: Allow
+            Principal:
+              Service: 
+                - events.amazonaws.com
+                - lambda.amazonaws.com
+            Action:
+              - sns:Publish
+            Resource: !Ref SNSTopic
+      Topics:
+        - !Ref SNSTopic                        
+  SNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint:
+        Ref: SNSEmailSubscriptionEndPoint
+      Protocol: email
+      TopicArn:
+        Ref: SNSTopic
+  LambdaFunctionSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W5
+            reason: Lambda needs access to internet, hence the open cidr
+          - id: W28
+            reason: Resource names are dynamically created using the stack id       
+    Properties:
+        GroupDescription: Allows AppStream 2.0 Linux Automation Lambda functions to communicate with image builder instances and AWS services.
+        GroupName: !Join
+          - "_"
+          - - "AS2_Automation_Linux_Lambdas"
+            - !Select
+              - 0
+              - !Split
+                - "-"
+                - !Select
+                  - 2
+                  - !Split
+                    - "/"
+                    - !Ref "AWS::StackId"        
+        VpcId:
+          Ref: AS2VPCId
+        SecurityGroupEgress:
+        - IpProtocol: 'tcp'
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+          Description: "Allow HTTPS from Lambda functions"
+        - IpProtocol: 'tcp'
+          FromPort: 53
+          ToPort: 53
+          CidrIp: 0.0.0.0/0
+          Description: "Allow DNS lookup from Lambda functions"
+        - IpProtocol: 'udp'
+          FromPort: 53
+          ToPort: 53
+          CidrIp: 0.0.0.0/0
+          Description: "Allow DNS lookup from Lambda functions"
+  LambdaFunctionSecurityGroupEgressRule1:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      IpProtocol: 'tcp'
+      FromPort: 22
+      ToPort: 22
+      DestinationSecurityGroupId:
+        Ref: ImageBuilderSecurityGroup
+      Description: "Allow SSH from Lambda functions to image builders"
+      GroupId:
+        Ref: LambdaFunctionSecurityGroup                           
+  ImageBuilderSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W5
+            reason: Image builder needs access to internet, hence the open cidr
+          - id: W28
+            reason: Resource names are dynamically created using the stack id       
+    Properties:
+        GroupDescription: Allows AppStream 2.0 Linux automation Lambda functions to communicate with image builder instances, and image builders to talk to outside resources and AWS services.
+        GroupName: !Join
+          - "_"
+          - - "AS2_Automation_Linux_ImageBuilders"
+            - !Select
+              - 0
+              - !Split
+                - "-"
+                - !Select
+                  - 2
+                  - !Split
+                    - "/"
+                    - !Ref "AWS::StackId"           
+        VpcId:
+          Ref: AS2VPCId
+        SecurityGroupEgress:
+        - IpProtocol: 'tcp'
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+          Description: "Allow HTTPS from image builders"
+        - IpProtocol: 'tcp'
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: "Allow HTTP from image builders"          
+        - IpProtocol: 'tcp'
+          FromPort: 53
+          ToPort: 53
+          CidrIp: 0.0.0.0/0
+          Description: "Allow DNS lookup from image builders"
+        - IpProtocol: 'udp'
+          FromPort: 53
+          ToPort: 53
+          CidrIp: 0.0.0.0/0
+          Description: "Allow DNS lookup from image builders"
+  ImageBuilderSecurityGroupIngressRule1:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: 'tcp'
+      FromPort: 22
+      ToPort: 22
+      SourceSecurityGroupId:
+        Ref: LambdaFunctionSecurityGroup
+      Description: "Allow remote SSH from Lambda functions"
+      GroupId:
+        Ref: ImageBuilderSecurityGroup                
+  LambdaFunctionIAMRole:
+    Type: 'AWS::IAM::Role'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Resource names are dynamically created using the stack id    
+    Properties: 
+      RoleName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_Lambda_Role"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"
+      Description: IAM role for AS2 Linux Automation Lambda Functions
+      AssumeRolePolicyDocument: # What service can assume this role
+        Version: '2012-10-17'
+        Statement: 
+          - 
+            Effect: Allow
+            Principal: 
+              Service: 
+                - 'lambda.amazonaws.com'
+            Action: 
+              - 'sts:AssumeRole'
+  LambdaFunctionIAMPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: Wildcard used due to dynamic nature of creating image builders by the automation        
+          - id: W28
+            reason: Resource names are dynamically created using the stack id    
+    Properties:
+      Description: Permissions needed by Lambda functions to interact with AppStream 2.0 image builders and service.
+      ManagedPolicyName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_Lambda_Policy"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"        
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: Allow
+            Action:
+              - ec2:DescribeNetworkInterfaces
+              - ec2:CreateNetworkInterface
+              - ec2:DeleteNetworkInterface
+              - appstream:DescribeImageBuilders
+              - appstream:GetImageBuilders
+              - appstream:DescribeImages
+              - appstream:CreateImageBuilder                
+              - appstream:DeleteImageBuilder
+              - appstream:ListTagsForResource
+              - appstream:StartImageBuilder
+              - appstream:StopImageBuilder
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - sns:Publish
+            Resource:
+              - Ref: SNSTopic
+          - Effect: Allow
+            Action:
+              - ssm:GetParameters
+            Resource:              
+              - Ref: AS2DefaultSSHKeyARN           
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+              - iam:PassRole
+            Resource:
+              - !GetAtt 'ImageBuilderIAMRole.Arn'                
+      Roles:
+        - !Ref LambdaFunctionIAMRole
+  StepFunctionIAMRole:
+    Type: 'AWS::IAM::Role'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Resource names are dynamically created using the stack id        
+    Properties: 
+      RoleName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_StepFunction_Role"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"
+      Description: IAM role for AppStream Linux Automation Step Function
+      AssumeRolePolicyDocument: # What service can assume this role
+        Version: '2012-10-17'
+        Statement: 
+          - 
+            Effect: Allow
+            Principal: 
+              Service: 
+                - 'states.amazonaws.com'
+            Action: 
+              - 'sts:AssumeRole'
+  StepFunctionIAMPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: Wildcard used due to dynamic nature of creating image builders by the automation            
+          - id: W28
+            reason: Resource names are dynamically created using the stack id        
+    Properties:
+      Description: Permissions needed by Step Function functions to interact with AppStream 2.0 image builders, AppStream 2.0 service, and SNS.
+      ManagedPolicyName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_StepFunction_Policy"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId" 
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: Allow
+            Action:
+              - 'lambda:InvokeFunction'
+            Resource:
+              - !GetAtt 'LambdaFunction01CreateBuilder.Arn'
+              - !GetAtt 'LambdaFunction02ScriptedInstall.Arn'
+              - !GetAtt 'LambdaFunction03RunImageAssistant.Arn'
+              - !GetAtt 'LambdaFunction04ImageNotification.Arn'                 
+          - Effect: Allow
+            Action:
+              - xray:PutTraceSegments
+              - xray:PutTelemetryRecords
+              - xray:GetSamplingRules
+              - xray:GetSamplingTargets
+              - logs:CreateLogDelivery
+              - logs:GetLogDelivery
+              - logs:UpdateLogDelivery
+              - logs:DeleteLogDelivery
+              - logs:ListLogDeliveries
+              - logs:PutResourcePolicy
+              - logs:DescribeResourcePolicies
+              - logs:DescribeLogGroups
+              - appstream:DescribeImageBuilders
+              - appstream:GetImageBuilders
+              - appstream:DescribeImages
+              - appstream:CreateImageBuilder
+              - appstream:DeleteImageBuilder
+              - appstream:ListTagsForResource
+              - appstream:StartImageBuilder
+              - appstream:StopImageBuilder                               
+            Resource: '*'
+      Roles:
+        - !Ref StepFunctionIAMRole
+  ImageBuilderIAMRole:
+    Type: 'AWS::IAM::Role'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Resource names are dynamically created using the stack id        
+    Properties: 
+      RoleName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_ImageBulder_Role"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"
+      Description: IAM role for AppStream 2.0 automation image builders
+      AssumeRolePolicyDocument: # What service can assume this role
+        Version: '2012-10-17'
+        Statement: 
+          - 
+            Effect: Allow
+            Principal: 
+              Service: 
+                - 'appstream.amazonaws.com'
+            Action: 
+              - 'sts:AssumeRole'
+  ImageBuilderIAMPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W13
+            reason: Wildcard used due to dynamic nature of creating image builders by the automation            
+          - id: W28
+            reason: Resource names are dynamically created using the stack id         
+    Properties:
+      Description: Permissions needed by AppStream 2.0 Linux image builders to interact with Step Functions.
+      ManagedPolicyName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_ImageBuilder_Policy"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId" 
+      PolicyDocument: 
+        Version: '2012-10-17'
+        Statement: 
+          - Effect: Allow
+            Action:
+              - states:SendTaskSuccess
+              - states:SendTaskFailure
+              - states:SendTaskHeartbeat
+            Resource: '*'
+      Roles:
+        - !Ref ImageBuilderIAMRole
+  LambdaFunction01CreateBuilder:
+    Type: AWS::Lambda::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: The IAM policy assigned to the function does grant permissions to write CloudWatch logs         
+          - id: W89
+            reason: This function does not need a VPC.         
+          - id: W92
+            reason: There is no need to reserve simultaneous executions for the functions in this template.      
+    Properties:
+      FunctionName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_FN01_Create_Builder"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"
+      Handler: lambda_function.lambda_handler
+      Code:
+        S3Bucket:
+          Ref: SourceS3Bucket
+        S3Key: FN01_AS2_Linux_Automation_Create_Builder.zip
+      Environment:
+        Variables:
+          Default_Description: Automated Linux Image Builder
+          Default_DisplayName : Automated Linux Builder
+          Default_IB_Name	: Automated_Linux_Builder
+          Default_Image : 
+              Ref: AS2DefaultImage
+          Default_Method : Script
+          Default_Prefix : Automated_Linux_Image
+          Default_Role : !GetAtt 'ImageBuilderIAMRole.Arn'
+          Default_SG :
+            Ref: ImageBuilderSecurityGroup           
+          Default_Subnet : 
+            Ref: AS2VPCSubnet1
+          Default_Type : stream.standard.medium
+          Default_ImageBuilderSSHKeyARN :
+            Ref: AS2DefaultSSHKeyARN
+      Runtime: python3.9
+      Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
+      Timeout: 30
+  LambdaFunction02ScriptedInstall:
+    Type: AWS::Lambda::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: The IAM policy assigned to the function does grant permissions to write CloudWatch logs           
+          - id: W92
+            reason: There is no need to reserve simultaneous executions for the functions in this template.      
+    Properties:
+      FunctionName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_FN02_Scripted_Install"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"       
+      Handler: lambda_function.lambda_handler
+      Code:
+        S3Bucket:
+          Ref: SourceS3Bucket
+        S3Key: FN02_AS2_Linux_Automation_Scripted_Install.zip
+      Runtime: python3.8
+      Layers:
+        - Ref: LambdaFunctionLayer
+      Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
+      MemorySize: 256
+      Timeout: 600
+      VpcConfig:
+        SecurityGroupIds:
+          - Ref: LambdaFunctionSecurityGroup
+        SubnetIds:
+          - Ref: AS2VPCSubnet1
+          - Ref: AS2VPCSubnet2
+    DependsOn:
+      - LambdaFunctionIAMRole
+      - LambdaFunctionIAMPolicy
+  LambdaFunction03RunImageAssistant:
+    Type: AWS::Lambda::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: The IAM policy assigned to the function does grant permissions to write CloudWatch logs           
+          - id: W92
+            reason: There is no need to reserve simultaneous executions for the functions in this template.      
+    Properties:
+      FunctionName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_FN03_Run_Image_Assistant"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"       
+      Handler: lambda_function.lambda_handler
+      Code:
+        S3Bucket:
+          Ref: SourceS3Bucket
+        S3Key: FN03_AS2_Linux_Automation_Run_Image_Assistant.zip
+      Runtime: python3.8
+      Layers:
+        - Ref: LambdaFunctionLayer
+      Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
+      MemorySize: 256
+      Timeout: 60
+      VpcConfig:
+        SecurityGroupIds:
+          - Ref: LambdaFunctionSecurityGroup
+        SubnetIds:
+          - Ref: AS2VPCSubnet1
+          - Ref: AS2VPCSubnet2
+    DependsOn:
+      - LambdaFunctionIAMRole
+      - LambdaFunctionIAMPolicy
+  LambdaFunction04ImageNotification:
+    Type: AWS::Lambda::Function
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W58
+            reason: The IAM policy assigned to the function does grant permissions to write CloudWatch logs         
+          - id: W89
+            reason: This function does not need a VPC.         
+          - id: W92
+            reason: There is no need to reserve simultaneous executions for the functions in this template.      
+    Properties:
+      FunctionName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_FN04_Image_Notification"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"        
+      Handler: lambda_function.lambda_handler
+      Code:
+        S3Bucket:
+          Ref: SourceS3Bucket
+        S3Key: FN04_AS2_Linux_Automation_Image_Notification.zip
+      Environment:
+        Variables:
+          NotificationARN: 
+            Ref: SNSTopic        
+      Runtime: python3.9
+      Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
+      Timeout: 30
+  StepFunction:
+    Type: AWS::StepFunctions::StateMachine
+    Properties:
+      StateMachineName: !Join
+        - "_"
+        - - "AS2_Automation_Linux_Scripted_App_Install"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"              
+      DefinitionString: 
+        Fn::Sub:
+          |-
+            {
+              "Comment": "AS2 Linux Image Automation WorkShop Step Function",
+              "StartAt": "Create Image Builder",
+              "States": {
+                "Create Image Builder": {
+                  "Type": "Task",
+                  "Resource": "${LambdaFunction01CreateBuilder.Arn}",
+                  "ResultPath": "$",
+                  "Next": "Check Builder Status (Create)"
+                },
+                "Check Builder Status (Create)": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::aws-sdk:appstream:describeImageBuilders",
+                  "Parameters": {
+                    "Names.$": "States.Array($.AutomationParameters.ImageBuilderName)"
+                  },
+                  "ResultPath": "$.BuilderStatus",
+                  "Next": "Is Builder Created and Running?"
+                },
+                "Is Builder Created and Running?": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.BuilderStatus.ImageBuilders[0].State",
+                      "StringEquals": "STOPPED",
+                      "Next": "If Created and Stopped, Start Image Builder"
+                    },
+                    {
+                      "Not": {
+                        "Variable": "$.BuilderStatus.ImageBuilders[0].State",
+                        "StringEquals": "RUNNING"
+                      },
+                      "Next": "If Not Ready, Wait 1 Min"
+                    },
+                    {
+                      "Not": {
+                        "Variable": "$.BuilderStatus.ImageBuilders[0].NetworkAccessConfiguration.EniPrivateIpAddress",
+                        "IsPresent": true
+                      },
+                      "Next": "If Not Ready, Wait 1 Min"
+                    }
+                  ],
+                  "Default": "Remote Software Install - Script",
+                  "Comment": "Wait for Builder to enter RUNNING status."
+                },
+                "If Created and Stopped, Start Image Builder": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::aws-sdk:appstream:startImageBuilder",
+                  "Parameters": {
+                    "Name.$": "$.AutomationParameters.ImageBuilderName"
+                  },
+                  "ResultPath": "$.BuilderStatus",
+                  "Next": "If Not Ready, Wait 1 Min"
+                },
+                "If Not Ready, Wait 1 Min": {
+                  "Type": "Wait",
+                  "Seconds": 60,
+                  "Next": "Check Builder Status (Create)"
+                },
+                "Remote Software Install - Script": {
+                  "Type": "Task",
+                  "Resource": "${LambdaFunction02ScriptedInstall.Arn}",
+                  "ResultPath": null,
+                  "Next": "Run Image Assistant"
+                },
+                "Run Image Assistant": {
+                  "Type": "Task",
+                  "Resource": "${LambdaFunction03RunImageAssistant.Arn}",
+                  "ResultPath": "$.ImageStatus",
+                  "Next": "Check Image Status"
+                },
+                "Check Image Status": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::aws-sdk:appstream:describeImages",
+                  "Parameters": {
+                    "Names.$": "States.Array($.ImageStatus.Images[0].Name)"
+                  },
+                  "ResultPath": "$.ImageStatus",
+                  "Next": "Is Image Ready?"
+                },
+                "Is Image Ready?": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.ImageStatus.Images[0].State",
+                      "StringEquals": "AVAILABLE",
+                      "Next": "Wait 1 min"
+                    }
+                  ],
+                  "Default": "If Not Available, Wait 2 min",
+                  "Comment": "Wait for image to enter Available status."
+                },
+                "If Not Available, Wait 2 min": {
+                  "Type": "Wait",
+                  "Seconds": 120,
+                  "Next": "Check Image Status"
+                },
+                "Wait 1 min": {
+                  "Type": "Wait",
+                  "Seconds": 60,
+                  "Next": "Delete Builder?"
+                },
+                "Delete Builder?": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.AutomationParameters.DeleteBuilder",
+                      "BooleanEquals": false,
+                      "Next": "Send Final Notification"
+                    }
+                  ],
+                  "Default": "Delete Image Builder"
+                },
+                "Delete Image Builder": {
+                  "Type": "Task",
+                  "Resource": "arn:aws:states:::aws-sdk:appstream:deleteImageBuilder",
+                  "Parameters": {
+                    "Name.$": "$.AutomationParameters.ImageBuilderName"
+                  },
+                  "ResultPath": "$.BuilderStatus",
+                  "Next": "Send Final Notification"
+                },
+                "Send Final Notification": {
+                  "Type": "Task",
+                  "Resource": "${LambdaFunction04ImageNotification.Arn}",
+                  "ResultPath": null,
+                  "End": true
+                }
+              }
+            }
+      RoleArn: !GetAtt 'StepFunctionIAMRole.Arn'
+  StepFunctionEventRule: 
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Join
+        - "_"
+        - - "AS2_Automation_Linux_Failure_Notification"
+          - !Select
+            - 0
+            - !Split
+              - "-"
+              - !Select
+                - 2
+                - !Split
+                  - "/"
+                  - !Ref "AWS::StackId"     
+      Description: "Rule to send notification to SNS topic when the AS2 Linux automation Step Function fails."
+      EventPattern: 
+        source: 
+          - "aws.states"
+        detail-type: 
+          - "Step Functions Execution Status Change"
+        detail: 
+          status: 
+            - "FAILED"
+          stateMachineArn:
+            - !GetAtt 'StepFunction.Arn'             
+      Targets: 
+        - Arn: !Ref SNSTopic
+          Id: "SNStopic"
+          InputTransformer:
+            InputPathsMap:
+              "account": "$.account"
+              "executionname": "$.detail.name"
+              "input": "$.detail.input"
+              "machine": "$.detail.stateMachineArn"
+              "region": "$.region"
+              "status": "$.detail.status"
+            InputTemplate: |
+              {
+                "StepFunction" : <machine>,
+                "Status" : <status>,
+                "Execution" : <executionname>,
+                "Input" : <input>,
+                "Account" : <account>,
+                "Region" : <region>
+              } 
