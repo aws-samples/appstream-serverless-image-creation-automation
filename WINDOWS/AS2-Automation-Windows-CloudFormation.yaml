@@ -291,7 +291,8 @@ Resources:
               - 's3:List*'
               - ec2:DescribeNetworkInterfaces
               - ec2:CreateNetworkInterface
-              - ec2:DeleteNetworkInterface              
+              - ec2:DeleteNetworkInterface
+              - appstream:TagResource              
               - appstream:DescribeImageBuilders
               - appstream:DescribeImages
               - appstream:CreateImageBuilder                
