@@ -73,6 +73,15 @@ Resources:
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+         - Id: "Delete previous versions"
+           NoncurrentVersionExpiration:
+             NewerNoncurrentVersions: 1
+             NoncurrentDays: 14
+           Status: Enabled
   LambdaFunctionLayer:
     Type: AWS::Lambda::LayerVersion
     Properties:
