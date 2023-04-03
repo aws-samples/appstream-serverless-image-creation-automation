@@ -141,6 +141,7 @@ Resources:
       LayerName: !Join
         - "_"
         - - "AS2_Automation_pywinrm"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -165,7 +166,8 @@ Resources:
     Properties:
       TopicName: !Join
         - "_"
-        - - "AS2_Automation_Windows_Notification"
+        - - "AS2_Automation_Notification"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -208,7 +210,8 @@ Resources:
         GroupDescription: Allows AppStream 2.0 automation Lambda functions to communicate with image builder instances and other AWS services.
         GroupName: !Join
           - "_"
-          - - "AS2_Automation_Windows_Lambdas"
+          - - "AS2_Automation_Lambdas"
+            - !Ref ImageBuilderImagePrefix
             - !Select
               - 0
               - !Split
@@ -264,7 +267,8 @@ Resources:
         GroupDescription: Allows AppStream 2.0 automation Lambda functions to communicate with image builder instances, and image builders to talk to outside resources and AWS services.
         GroupName: !Join
           - "_"
-          - - "AS2_Automation_Windows_ImageBuilders"
+          - - "AS2_Automation_ImageBuilders"
+            - !Ref ImageBuilderImagePrefix
             - !Select
               - 0
               - !Split
@@ -307,7 +311,8 @@ Resources:
     Properties: 
       RoleName: !Join
         - "_"
-        - - "AS2_Automation_Windows_Lambda_Role"
+        - - "AS2_Automation_Lambda_Role"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -334,7 +339,8 @@ Resources:
       Description: Permissions needed by Lambda functions to interact with AppStream 2.0 image builders and service.
       ManagedPolicyName: !Join
         - "_"
-        - - "AS2_Automation_Windows_Lambda_Policy"
+        - - "AS2_Automation_Lambda_Policy"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -390,7 +396,8 @@ Resources:
     Properties: 
       RoleName: !Join
         - "_"
-        - - "AS2_Automation_Windows_StepFunction_Role"
+        - - "AS2_Automation_StepFunction_Role"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -417,7 +424,8 @@ Resources:
       Description: Permissions needed by Step Function functions to interact with AppStream 2.0 image builders, the AppStream 2.0 service, and SNS.
       ManagedPolicyName: !Join
         - "_"
-        - - "AS2_Automation_Windows_StepFunction_Policy"
+        - - "AS2_Automation_StepFunction_Policy"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -480,7 +488,8 @@ Resources:
     Properties: 
       RoleName: !Join
         - "_"
-        - - "AS2_Automation_Windows_ImageBuilder_Role"
+        - - "AS2_Automation_ImageBuilder_Role"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -507,7 +516,8 @@ Resources:
       Description: Permissions needed by AppStream 2.0 image builders to interact with Secrets Manager, S3, and Step Functions.
       ManagedPolicyName: !Join
         - "_"
-        - - "AS2_Automation_Windows_ImageBuilder_Policy"
+        - - "AS2_Automation_ImageBuilder_Policy"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -552,7 +562,8 @@ Resources:
       AutoPublishAlias: live
       FunctionName: !Join
         - "_"
-        - - "AS2_Automation_Windows_FN01_Create_Builder"
+        - - "AS2_Automation_FN01_Create_Builder"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -600,7 +611,8 @@ Resources:
       AutoPublishAlias: live
       FunctionName: !Join
         - "_"
-        - - "AS2_Automation_Windows_FN02_Scripted_Install"
+        - - "AS2_Automation_FN02_Scripted_Install"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -639,7 +651,8 @@ Resources:
       AutoPublishAlias: live
       FunctionName: !Join
         - "_"
-        - - "AS2_Automation_Windows_FN03_Run_Image_Assistant"
+        - - "AS2_Automation_FN03_Run_Image_Assistant"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -675,7 +688,8 @@ Resources:
       AutoPublishAlias: live
       FunctionName: !Join
         - "_"
-        - - "AS2_Automation_Windows_FN04_Image_Notification"
+        - - "AS2_Automation_FN04_Image_Notification"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
@@ -700,18 +714,7 @@ Resources:
   StepFunction:
     Type: AWS::StepFunctions::StateMachine
     Properties:
-      StateMachineName: !Join
-        - "_"
-        - - "AS2_Automation_Windows_Scripted_App_Install"
-          - !Select
-            - 0
-            - !Split
-              - "-"
-              - !Select
-                - 2
-                - !Split
-                  - "/"
-                  - !Ref "AWS::StackId"              
+      StateMachineName: !Ref "AWS::StackName"
       DefinitionString: 
         Fn::Sub:
           |-
@@ -927,7 +930,8 @@ Resources:
     Properties:
       Name: !Join
         - "_"
-        - - "AS2_Automation_Windows_Failure_Notification"
+        - - "AS2_Automation_Failure_Notification"
+          - !Ref ImageBuilderImagePrefix
           - !Select
             - 0
             - !Split
