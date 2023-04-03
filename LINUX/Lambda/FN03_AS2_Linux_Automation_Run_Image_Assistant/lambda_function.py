@@ -18,11 +18,13 @@ import logging
 import boto3
 import datetime
 import paramiko
+import os
 from datetime import datetime
 from io import StringIO
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+LOGLEVEL = os.getenv('LOGLEVEL', 'INFO').upper()
+logger.setLevel(LOGLEVEL)
 
  
 # Get parameter from SSM

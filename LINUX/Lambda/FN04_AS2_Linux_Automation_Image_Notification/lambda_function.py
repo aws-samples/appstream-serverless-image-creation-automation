@@ -21,7 +21,8 @@ import json
 import textwrap
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+LOGLEVEL = os.getenv('LOGLEVEL', 'INFO').upper()
+logger.setLevel(LOGLEVEL)
 
 appstream = boto3.client('appstream')
 sns = boto3.client('sns')

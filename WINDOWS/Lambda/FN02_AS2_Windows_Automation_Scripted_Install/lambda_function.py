@@ -22,7 +22,8 @@ import winrm
 import base64
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+LOGLEVEL = os.getenv('LOGLEVEL', 'INFO').upper()
+logger.setLevel(LOGLEVEL)
 
 appstream = boto3.client('appstream')
 secretsmgr = boto3.client('secretsmanager')

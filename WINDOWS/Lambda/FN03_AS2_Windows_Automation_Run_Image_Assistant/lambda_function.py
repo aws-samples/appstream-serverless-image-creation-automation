@@ -21,10 +21,12 @@ import datetime
 import winrm
 import base64
 import sys
+import os
 from datetime import datetime
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+LOGLEVEL = os.getenv('LOGLEVEL', 'INFO').upper()
+logger.setLevel(LOGLEVEL)
 
 secretsmgr = boto3.client('secretsmanager')
 
