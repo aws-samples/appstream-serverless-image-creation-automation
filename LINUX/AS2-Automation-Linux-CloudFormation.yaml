@@ -46,7 +46,28 @@ Parameters:
     Type: String
     Description: "ImageBuilderImagePrefix"
     Default: "Automated_Linux_Image"
+  LambdaFunctionLayerS3Key:
+    Type: String
+    Description: "S3 Key of the Lambda Paramiko Library"
+    Default: "Lambda_Layer_paramiko38_libraries.zip"
+  FN01S3Key:
+    Type: String
+    Description: "S3 Key of the FN01_AS2_Windows_Automation_Create_Builder lambda function source zip"
+    Default: "FN01_AS2_Windows_Automation_Create_Builder.zip"
+  FN02S3Key:
+    Type: String
+    Description: "S3 Key of the N02_AS2_Windows_Automation_Scripted_Install lambda function source zip"
+    Default: "FN02_AS2_Windows_Automation_Scripted_Install.zip"
+  FN03S3Key:
+    Type: String
+    Description: "S3 Key of the FN03_AS2_Windows_Automation_Run_Image_Assistant lambda function source zip"
+    Default: "FN03_AS2_Windows_Automation_Run_Image_Assistant.zip"
+  FN04S3Key:
+    Type: String
+    Description: "S3 Key of the FN04_AS2_Windows_Automation_Image_Notification lambda function source zip"
+    Default: "FN04_AS2_Windows_Automation_Image_Notification.zip"
 
+Transform: AWS::Serverless-2016-10-31
 Resources:
   LambdaFunctionLayer:
     Type: AWS::Lambda::LayerVersion
@@ -67,9 +88,12 @@ Resources:
       Content:
         S3Bucket:
           Ref: SourceS3Bucket
-        S3Key: Lambda_Layer_paramiko38_libraries.zip
+        S3Key: !Ref LambdaFunctionLayerS3Key
       CompatibleRuntimes:
+        - python3.9
         - python3.8
+        - python3.7
+        - python3.6
   SNSTopic:
     Type: AWS::SNS::Topic     
     Properties:
@@ -319,7 +343,7 @@ Resources:
   StepFunctionIAMPolicy:
     Type: 'AWS::IAM::ManagedPolicy'      
     Properties:
-      Description: Permissions needed by Step Function functions to interact with AppStream 2.0 image builders, AppStream 2.0 service, and SNS.
+      Description: Permissions needed by Step Function functions to interact with AppStream 2.0 image builders, the AppStream 2.0 service, and SNS.
       ManagedPolicyName: !Join
         - "_"
         - - "AS2_Automation_Linux_StepFunction_Policy"
@@ -339,10 +363,22 @@ Resources:
             Action:
               - 'lambda:InvokeFunction'
             Resource:
-              - !GetAtt 'LambdaFunction01CreateBuilder.Arn'
-              - !GetAtt 'LambdaFunction02ScriptedInstall.Arn'
-              - !GetAtt 'LambdaFunction03RunImageAssistant.Arn'
-              - !GetAtt 'LambdaFunction04ImageNotification.Arn'                 
+              - !Join
+                - ":"
+                - - !GetAtt 'LambdaFunction01CreateBuilder.Arn'
+                  - "live"
+              - !Join
+                - ":"
+                - - !GetAtt 'LambdaFunction02ScriptedInstall.Arn'
+                  - "live"
+              - !Join
+                - ":"
+                - - !GetAtt 'LambdaFunction03RunImageAssistant.Arn'
+                  - "live"
+              - !Join
+                - ":"
+                - - !GetAtt 'LambdaFunction04ImageNotification.Arn'
+                  - "live"
           - Effect: Allow
             Action:
               - xray:PutTraceSegments
@@ -373,7 +409,7 @@ Resources:
     Properties: 
       RoleName: !Join
         - "_"
-        - - "AS2_Automation_Linux_ImageBulder_Role"
+        - - "AS2_Automation_Linux_ImageBuilder_Role"
           - !Select
             - 0
             - !Split
@@ -422,8 +458,9 @@ Resources:
       Roles:
         - !Ref ImageBuilderIAMRole
   LambdaFunction01CreateBuilder:
-    Type: AWS::Lambda::Function     
+    Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: live
       FunctionName: !Join
         - "_"
         - - "AS2_Automation_Linux_FN01_Create_Builder"
@@ -437,10 +474,10 @@ Resources:
                   - "/"
                   - !Ref "AWS::StackId"
       Handler: lambda_function.lambda_handler
-      Code:
-        S3Bucket:
+      CodeUri:
+        Bucket:
           Ref: SourceS3Bucket
-        S3Key: FN01_AS2_Linux_Automation_Create_Builder.zip
+        Key: !Ref FN01S3Key
       Environment:
         Variables:
           Default_Description: !Ref ImageBuilderDescription
@@ -453,13 +490,15 @@ Resources:
           Default_SG : !Ref ImageBuilderSecurityGroup
           Default_Subnet : !Ref AS2VPCSubnet1
           Default_Type : !Ref AS2DefaultInstanceType
+          Default_S3_Bucket: !Ref SourceS3Bucket
           Default_ImageBuilderSSHKeyARN : !Ref AS2DefaultSSHKeyARN
       Runtime: python3.9
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
       Timeout: 30
   LambdaFunction02ScriptedInstall:
-    Type: AWS::Lambda::Function     
+    Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: live
       FunctionName: !Join
         - "_"
         - - "AS2_Automation_Linux_FN02_Scripted_Install"
@@ -473,16 +512,19 @@ Resources:
                   - "/"
                   - !Ref "AWS::StackId"       
       Handler: lambda_function.lambda_handler
-      Code:
-        S3Bucket:
+      CodeUri:
+        Bucket:
           Ref: SourceS3Bucket
-        S3Key: FN02_AS2_Linux_Automation_Scripted_Install.zip
-      Runtime: python3.8
+        Key: !Ref FN02S3Key
+      Runtime: python3.9
+      Environment:
+        Variables:
+          Default_S3_Bucket: !Ref SourceS3Bucket
       Layers:
         - Ref: LambdaFunctionLayer
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
-      MemorySize: 256
-      Timeout: 600
+      MemorySize: 512
+      Timeout: 900
       VpcConfig:
         SecurityGroupIds:
           - Ref: LambdaFunctionSecurityGroup
@@ -493,8 +535,9 @@ Resources:
       - LambdaFunctionIAMRole
       - LambdaFunctionIAMPolicy
   LambdaFunction03RunImageAssistant:
-    Type: AWS::Lambda::Function   
+    Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: live
       FunctionName: !Join
         - "_"
         - - "AS2_Automation_Linux_FN03_Run_Image_Assistant"
@@ -508,11 +551,11 @@ Resources:
                   - "/"
                   - !Ref "AWS::StackId"       
       Handler: lambda_function.lambda_handler
-      Code:
-        S3Bucket:
+      CodeUri:
+        Bucket:
           Ref: SourceS3Bucket
-        S3Key: FN03_AS2_Linux_Automation_Run_Image_Assistant.zip
-      Runtime: python3.8
+        Key: !Ref FN03S3Key
+      Runtime: python3.9
       Layers:
         - Ref: LambdaFunctionLayer
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
@@ -528,8 +571,9 @@ Resources:
       - LambdaFunctionIAMRole
       - LambdaFunctionIAMPolicy
   LambdaFunction04ImageNotification:
-    Type: AWS::Lambda::Function     
+    Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: live
       FunctionName: !Join
         - "_"
         - - "AS2_Automation_Linux_FN04_Image_Notification"
@@ -543,10 +587,10 @@ Resources:
                   - "/"
                   - !Ref "AWS::StackId"        
       Handler: lambda_function.lambda_handler
-      Code:
-        S3Bucket:
+      CodeUri:
+        Bucket:
           Ref: SourceS3Bucket
-        S3Key: FN04_AS2_Linux_Automation_Image_Notification.zip
+        Key: !Ref FN04S3Key
       Environment:
         Variables:
           NotificationARN: 
@@ -573,12 +617,12 @@ Resources:
         Fn::Sub:
           |-
             {
-              "Comment": "AS2 Linux Image Automation WorkShop Step Function",
+              "Comment": "AS2 Linux Image Automation Step Function",
               "StartAt": "Create Image Builder",
               "States": {
                 "Create Image Builder": {
                   "Type": "Task",
-                  "Resource": "${LambdaFunction01CreateBuilder.Arn}",
+                  "Resource": "${LambdaFunction01CreateBuilder.Arn}:live",
                   "ResultPath": "$",
                   "Next": "Check Builder Status (Create)"
                 },
@@ -633,13 +677,13 @@ Resources:
                 },
                 "Remote Software Install - Script": {
                   "Type": "Task",
-                  "Resource": "${LambdaFunction02ScriptedInstall.Arn}",
+                  "Resource": "${LambdaFunction02ScriptedInstall.Arn}:live",
                   "ResultPath": null,
                   "Next": "Run Image Assistant"
                 },
                 "Run Image Assistant": {
                   "Type": "Task",
-                  "Resource": "${LambdaFunction03RunImageAssistant.Arn}",
+                  "Resource": "${LambdaFunction03RunImageAssistant.Arn}:live",
                   "ResultPath": "$.ImageStatus",
                   "Next": "Check Image Status"
                 },
@@ -696,7 +740,7 @@ Resources:
                 },
                 "Send Final Notification": {
                   "Type": "Task",
-                  "Resource": "${LambdaFunction04ImageNotification.Arn}",
+                  "Resource": "${LambdaFunction04ImageNotification.Arn}:live",
                   "ResultPath": null,
                   "End": true
                 }
@@ -749,3 +793,20 @@ Resources:
                 "Account" : <account>,
                 "Region" : <region>
               }
+Outputs:
+  LambdaFunction01CreateBuilder:
+    Value: !Ref LambdaFunction01CreateBuilder
+  LambdaFunction01CreateBuilderAliaslive:
+    Value: !Ref LambdaFunction01CreateBuilderAliaslive
+  LambdaFunction02ScriptedInstall:
+    Value: !Ref LambdaFunction02ScriptedInstall
+  LambdaFunction02ScriptedInstallAliaslive:
+    Value: !Ref LambdaFunction02ScriptedInstallAliaslive
+  LambdaFunction03RunImageAssistant:
+    Value: !Ref LambdaFunction03RunImageAssistant
+  LambdaFunction03RunImageAssistantAliaslive:
+    Value: !Ref LambdaFunction03RunImageAssistantAliaslive
+  LambdaFunction04ImageNotification:
+    Value: !Ref LambdaFunction04ImageNotification
+  LambdaFunction04ImageNotificationAliaslive:
+    Value: !Ref LambdaFunction04ImageNotificationAliaslive
