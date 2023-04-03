@@ -4,7 +4,7 @@ Description: >-
 Parameters:
   SourceS3Bucket:
     Type: String
-    Description: S3 Bucket name that contains the files required to import and execute this AppStream 2.0 automation workflow. (Lambda functions and layer zip files)
+    Description: S3 Bucket name that contains the files required to import, build and execute this AppStream 2.0 automation workflow. (Lambda functions and layer zip files)
   SNSEmailSubscriptionEndPoint:
     Type: String
     Description: The email address that receives the automation notifications.
@@ -42,7 +42,7 @@ Resources:
                 - !Split
                   - "/"
                   - !Ref "AWS::StackId"      
-      Description: Contains paramiko libraries. Dependencies for the AppStream 2.0 automation workshop.
+      Description: Contains paramiko libraries. Dependencies for the AppStream 2.0 automation.
       Content:
         S3Bucket:
           Ref: SourceS3Bucket
@@ -233,6 +233,8 @@ Resources:
         Statement: 
           - Effect: Allow
             Action:
+              - 's3:Get*'
+              - 's3:List*'
               - ec2:DescribeNetworkInterfaces
               - ec2:CreateNetworkInterface
               - ec2:DeleteNetworkInterface
@@ -376,7 +378,7 @@ Resources:
   ImageBuilderIAMPolicy:
     Type: 'AWS::IAM::ManagedPolicy'        
     Properties:
-      Description: Permissions needed by AppStream 2.0 Linux image builders to interact with Step Functions.
+      Description: Permissions needed by AppStream 2.0 Linux image builders to interact with S3 and Step Functions.
       ManagedPolicyName: !Join
         - "_"
         - - "AS2_Automation_Linux_ImageBuilder_Policy"
@@ -398,6 +400,21 @@ Resources:
               - states:SendTaskFailure
               - states:SendTaskHeartbeat
             Resource: '*'
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref SourceS3Bucket
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref SourceS3Bucket
+                - '/*'
       Roles:
         - !Ref ImageBuilderIAMRole
   LambdaFunction01CreateBuilder:
@@ -435,6 +452,7 @@ Resources:
           Default_Subnet : 
             Ref: AS2VPCSubnet1
           Default_Type : stream.standard.medium
+          Default_S3_Bucket: !Ref SourceS3Bucket
           Default_ImageBuilderSSHKeyARN :
             Ref: AS2DefaultSSHKeyARN
       Runtime: python3.9
@@ -461,6 +479,9 @@ Resources:
           Ref: SourceS3Bucket
         S3Key: FN02_AS2_Linux_Automation_Scripted_Install.zip
       Runtime: python3.8
+      Environment:
+        Variables:
+          Default_S3_Bucket: !Ref SourceS3Bucket
       Layers:
         - Ref: LambdaFunctionLayer
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'

@@ -4,7 +4,7 @@ Description: >-
 Parameters:
   SourceS3Bucket:
     Type: String
-    Description: S3 Bucket name that contains the files required to import and  build this AppStream 2.0 automation workflow. (Lambda functions and layer zip files)
+    Description: S3 Bucket name that contains the files required to import, build and execute this AppStream 2.0 automation workflow. (Lambda functions and layer zip files)
   SNSEmailSubscriptionEndPoint:
     Type: String
     Description: The email address that receives the automation notifications.
@@ -48,40 +48,7 @@ Resources:
         -
           Key: AS2_Image_Automation
           Value: v1
-  WorkShopS3Bucket: 
-    Type: "AWS::S3::Bucket" #creates a bucket with a semi-random name as2-automation-blog-XXXXXX
-    Properties:
-      BucketName: !Join
-        - "-"
-        - - "as2-automation-blog"
-          - !Select
-            - 0
-            - !Split
-              - "-"
-              - !Select
-                - 2
-                - !Split
-                  - "/"
-                  - !Ref "AWS::StackId"
-      AccessControl: Private
-      BucketEncryption:
-        ServerSideEncryptionConfiguration:
-          - ServerSideEncryptionByDefault:
-              SSEAlgorithm: AES256
-      PublicAccessBlockConfiguration:
-        BlockPublicAcls: true
-        BlockPublicPolicy: true
-        IgnorePublicAcls: true
-        RestrictPublicBuckets: true
-      VersioningConfiguration:
-        Status: Enabled
-      LifecycleConfiguration:
-        Rules:
-         - Id: "Delete previous versions"
-           NoncurrentVersionExpiration:
-             NewerNoncurrentVersions: 1
-             NoncurrentDays: 14
-           Status: Enabled
+
   LambdaFunctionLayer:
     Type: AWS::Lambda::LayerVersion
     Properties:
@@ -468,15 +435,17 @@ Resources:
           - Effect: Allow
             Action:
               - s3:ListBucket
-            Resource:
-              - !GetAtt 'WorkShopS3Bucket.Arn'                  
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref SourceS3Bucket
           - Effect: Allow
             Action:
               - s3:GetObject
             Resource: !Join
               - ''
-              - 
-                - !GetAtt 'WorkShopS3Bucket.Arn'
+              - - 'arn:aws:s3:::'
+                - !Ref SourceS3Bucket
                 - '/*'
       Roles:
         - !Ref ImageBuilderIAMRole
@@ -525,7 +494,7 @@ Resources:
           Default_Subnet : 
             Ref: AS2VPCSubnet1
           Default_Type : stream.standard.medium
-          Default_S3_Bucket: !Ref WorkShopS3Bucket
+          Default_S3_Bucket: !Ref SourceS3Bucket
       Runtime: python3.9
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
       Timeout: 30
@@ -552,7 +521,7 @@ Resources:
       Runtime: python3.9
       Environment:
         Variables:
-          Default_S3_Bucket: !Ref WorkShopS3Bucket
+          Default_S3_Bucket: !Ref SourceS3Bucket
       Layers:
         - Ref: LambdaFunctionLayer
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
@@ -901,7 +870,3 @@ Resources:
                 "Region" : <region>
               } 
 Outputs:
-  WorkShopS3BucketName:
-    Description: The bucket in S3 to upload automation execution resources including installation installation packages.
-    Value: 
-      Ref: WorkShopS3Bucket
