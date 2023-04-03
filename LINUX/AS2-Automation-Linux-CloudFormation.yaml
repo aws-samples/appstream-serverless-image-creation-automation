@@ -23,6 +23,10 @@ Parameters:
     Type: String
     Description: Default Linux image to use when creating the AppStream 2.0 image builder instance. Input the name of your customized image with the embedded SSH key here. See blog documentation for instructions on creating this.
     Default: Linux_Automation_Base
+  AS2DefaultInstanceType:
+    Type: String
+    Description: The AppStream Instance type to use for the ImageBuilder
+    Default: 'stream.standard.medium'
   AS2DefaultSSHKeyARN:
     Type: String
     Description: ARN of the AWS Systems Manager parameter containing the SSH key embedded in your customized Linux image. See blog documentation for instructions on creating this. (arn:aws:ssm:us-east-2:123456789012:parameter/as2_automation/rsakey)
@@ -448,7 +452,7 @@ Resources:
           Default_Role : !GetAtt 'ImageBuilderIAMRole.Arn'
           Default_SG : !Ref ImageBuilderSecurityGroup
           Default_Subnet : !Ref AS2VPCSubnet1
-          Default_Type : stream.standard.medium
+          Default_Type : !Ref AS2DefaultInstanceType
           Default_ImageBuilderSSHKeyARN : !Ref AS2DefaultSSHKeyARN
       Runtime: python3.9
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'

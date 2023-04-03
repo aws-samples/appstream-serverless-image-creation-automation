@@ -23,6 +23,10 @@ Parameters:
     Type: String
     Description: Default Windows image to use when creating the AppStream 2.0 image builder instance. For non-domain joined image builders, input your customized base image with the embedded startup script here. See blog documentation for instructions on creating this.
     Default: AppStream-WinServer2019-03-03-2022
+  AS2DefaultInstanceType:
+    Type: String
+    Description: The AppStream Instance type to use for the ImageBuilder
+    Default: 'stream.standard.medium'
   DefaultDomain:
     Type: String
     Description: Default Active Directory FQDN to join image builder instances to. This should already be setup within the AppStream 2.0 console. Leave blank or enter 'none' to not join a domain. (onprem.corp.int)
@@ -551,8 +555,8 @@ Resources:
           Default_Role : !GetAtt 'ImageBuilderIAMRole.Arn'
           Default_SG : !Ref ImageBuilderSecurityGroup
           Default_Subnet : !Ref AS2VPCSubnet1
-          Default_Type : stream.standard.medium
           Default_S3_Bucket: !Ref WorkShopS3Bucket
+          Default_Type : !Ref AS2DefaultInstanceType
       Runtime: python3.9
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
       Timeout: 30
