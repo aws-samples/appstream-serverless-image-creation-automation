@@ -814,3 +814,37 @@ Outputs:
     Value: !Ref LambdaFunction04ImageNotification
   LambdaFunction04ImageNotificationAliaslive:
     Value: !Ref LambdaFunction04ImageNotificationAliaslive
+  ImageBuilderIAMPolicy:
+    Value: !Ref ImageBuilderIAMPolicy
+  ImageBuilderIAMRole:
+    Value: !Ref ImageBuilderIAMRole
+  ImageBuilderSecurityGroup:
+    Value: !Ref ImageBuilderSecurityGroup
+  ImageBuilderSecurityGroupIngressRule1:
+    Value: !Ref ImageBuilderSecurityGroupIngressRule1
+  LambdaFunction01CreateBuilder:
+    Value: !Ref LambdaFunction01CreateBuilder
+  LambdaFunctionIAMPolicy:
+    Value: !Ref LambdaFunctionIAMPolicy
+  LambdaFunctionIAMRole:
+    Value: !Ref LambdaFunctionIAMRole
+  LambdaFunctionLayer:
+    Value: !Ref LambdaFunctionLayer
+  LambdaFunctionSecurityGroup:
+    Value: !Ref LambdaFunctionSecurityGroup
+  LambdaFunctionSecurityGroupEgressRule1:
+    Value: !Ref LambdaFunctionSecurityGroupEgressRule1
+  SNSSubscription:
+    Value: !Ref SNSSubscription
+  SNSTopic:
+    Value: !Ref SNSTopic
+  SNSTopicPolicy:
+    Value: !Ref SNSTopicPolicy
+  StepFunction:
+    Value: !Ref StepFunction
+  StepFunctionEventRule:
+    Value: !Ref StepFunctionEventRule
+  StepFunctionIAMPolicy:
+    Value: !Ref StepFunctionIAMPolicy
+  StepFunctionIAMRole:
+    Value: !Ref StepFunctionIAMRole

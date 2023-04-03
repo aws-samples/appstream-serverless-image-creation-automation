@@ -991,5 +991,43 @@ Outputs:
     Value: !Ref LambdaFunction04ImageNotificationAliaslive
   WorkShopS3BucketName:
     Description: The bucket in S3 to upload automation execution resources including installation installation packages.
-    Value: 
+    Value:
       Ref: WorkShopS3Bucket
+  ImageBuilderIAMPolicy:
+    Value: !Ref ImageBuilderIAMPolicy
+  ImageBuilderIAMRole:
+    Value: !Ref ImageBuilderIAMRole
+  ImageBuilderSecurityGroup:
+    Value: !Ref ImageBuilderSecurityGroup
+  ImageBuilderSecurityGroupIngressRule1:
+    Value: !Ref ImageBuilderSecurityGroupIngressRule1
+  ImageBuilderSecurityGroupIngressRule2:
+    Value: !Ref ImageBuilderSecurityGroupIngressRule2
+  LambdaFunction01CreateBuilder:
+    Value: !Ref LambdaFunction01CreateBuilder
+  LambdaFunctionIAMPolicy:
+    Value: !Ref LambdaFunctionIAMPolicy
+  LambdaFunctionIAMRole:
+    Value: !Ref LambdaFunctionIAMRole
+  LambdaFunctionLayer:
+    Value: !Ref LambdaFunctionLayer
+  LambdaFunctionSecurityGroup:
+    Value: !Ref LambdaFunctionSecurityGroup
+  LambdaFunctionSecurityGroupEgressRule1:
+    Value: !Ref LambdaFunctionSecurityGroupEgressRule1
+  LambdaFunctionSecurityGroupEgressRule2:
+    Value: !Ref LambdaFunctionSecurityGroupEgressRule2
+  SNSSubscription:
+    Value: !Ref SNSSubscription
+  SNSTopic:
+    Value: !Ref SNSTopic
+  SNSTopicPolicy:
+    Value: !Ref SNSTopicPolicy
+  StepFunction:
+    Value: !Ref StepFunction
+  StepFunctionEventRule:
+    Value: !Ref StepFunctionEventRule
+  StepFunctionIAMPolicy:
+    Value: !Ref StepFunctionIAMPolicy
+  StepFunctionIAMRole:
+    Value: !Ref StepFunctionIAMRole
