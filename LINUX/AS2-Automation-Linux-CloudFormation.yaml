@@ -23,9 +23,30 @@ Parameters:
     Type: String
     Description: Default Linux image to use when creating the AppStream 2.0 image builder instance. Input the name of your customized image with the embedded SSH key here. See blog documentation for instructions on creating this.
     Default: Linux_Automation_Base
+  AS2DefaultInstanceType:
+    Type: String
+    Description: The AppStream Instance type to use for the ImageBuilder
+    Default: 'stream.standard.medium'
   AS2DefaultSSHKeyARN:
     Type: String
-    Description: ARN of the AWS Systems Manager parameter containing the SSH key embedded in your customized Linux image. See blog documentation for instructions on creating this. (arn:aws:ssm:us-east-2:123456789012:parameter/as2_automation/rsakey)  
+    Description: ARN of the AWS Systems Manager parameter containing the SSH key embedded in your customized Linux image. See blog documentation for instructions on creating this. (arn:aws:ssm:us-east-2:123456789012:parameter/as2_automation/rsakey)
+  ImageBuilderDescription:
+    Type: String
+    Description: "ImageBuilderDescription"
+    Default: "Automated Linux Image Builder"
+  ImageBuilderDisplayName:
+    Type: String
+    Description: "ImageBuilderDisplayName"
+    Default: "Automated Linux Builder"
+  ImageBuilderBuilderName:
+    Type: String
+    Description: "ImageBuilderBuilderName"
+    Default: "Automated_Linux_Builder"
+  ImageBuilderImagePrefix:
+    Type: String
+    Description: "ImageBuilderImagePrefix"
+    Default: "Automated_Linux_Image"
+
 Resources:
   LambdaFunctionLayer:
     Type: AWS::Lambda::LayerVersion
@@ -422,21 +443,17 @@ Resources:
         S3Key: FN01_AS2_Linux_Automation_Create_Builder.zip
       Environment:
         Variables:
-          Default_Description: Automated Linux Image Builder
-          Default_DisplayName : Automated Linux Builder
-          Default_IB_Name	: Automated_Linux_Builder
-          Default_Image : 
-              Ref: AS2DefaultImage
+          Default_Description: !Ref ImageBuilderDescription
+          Default_DisplayName: !Ref ImageBuilderDisplayName
+          Default_IB_Name : !Ref ImageBuilderBuilderName
+          Default_Image : !Ref AS2DefaultImage
           Default_Method : Script
-          Default_Prefix : Automated_Linux_Image
+          Default_Prefix : !Ref ImageBuilderImagePrefix
           Default_Role : !GetAtt 'ImageBuilderIAMRole.Arn'
-          Default_SG :
-            Ref: ImageBuilderSecurityGroup           
-          Default_Subnet : 
-            Ref: AS2VPCSubnet1
-          Default_Type : stream.standard.medium
-          Default_ImageBuilderSSHKeyARN :
-            Ref: AS2DefaultSSHKeyARN
+          Default_SG : !Ref ImageBuilderSecurityGroup
+          Default_Subnet : !Ref AS2VPCSubnet1
+          Default_Type : !Ref AS2DefaultInstanceType
+          Default_ImageBuilderSSHKeyARN : !Ref AS2DefaultSSHKeyARN
       Runtime: python3.9
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
       Timeout: 30
@@ -731,4 +748,4 @@ Resources:
                 "Input" : <input>,
                 "Account" : <account>,
                 "Region" : <region>
-              } 
+              }
