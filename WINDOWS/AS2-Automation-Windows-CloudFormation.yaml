@@ -4,7 +4,7 @@ Description: >-
 Parameters:
   SourceS3Bucket:
     Type: String
-    Description: S3 Bucket name that contains the files required to import and  build this AppStream 2.0 automation workflow. (Lambda functions and layer zip files)
+    Description: S3 Bucket name that contains the files required to import and build this AppStream 2.0 automation workflow. (Lambda functions and layer zip files)
   SNSEmailSubscriptionEndPoint:
     Type: String
     Description: The email address that receives the automation notifications.
@@ -23,6 +23,10 @@ Parameters:
     Type: String
     Description: Default Windows image to use when creating the AppStream 2.0 image builder instance. For non-domain joined image builders, input your customized base image with the embedded startup script here. See blog documentation for instructions on creating this.
     Default: AppStream-WinServer2019-03-03-2022
+  AS2DefaultInstanceType:
+    Type: String
+    Description: The AppStream Instance type to use for the ImageBuilder
+    Default: 'stream.standard.medium'
   DefaultDomain:
     Type: String
     Description: Default Active Directory FQDN to join image builder instances to. This should already be setup within the AppStream 2.0 console. Leave blank or enter 'none' to not join a domain. (onprem.corp.int)
@@ -31,19 +35,68 @@ Parameters:
     Type: String
     Description: Default Active Directory OU Distinguished Name to place image builder instances in. Leave blank or enter 'none' to not join a domain. (OU=Image_Builders,OU=AppStream,OU=Virtual,OU=Production,OU=EUC,DC=onprem,DC=corp,DC=int)
     Default: none
+  ImageBuilderSecretArn:
+    Type: String
+    Description: "ARN Credentials used by the application installer to access the AppStream ImageBuilder builder instance. Set this if the secret already exists"
+    Default: ""
+  ImageBuilderSecretPath:
+    Type: String
+    Description: "Credentials used by the application installer to access the AppStream ImageBuilder builder instance"
+    Default: "as2/builder/pw"
+  ImageBuilderDescription:
+    Type: String
+    Description: "ImageBuilderDescription"
+    Default: "Automated Image Builder"
+  ImageBuilderDisplayName:
+    Type: String
+    Description: "ImageBuilderDisplayName"
+    Default: "Automated Builder"
+  ImageBuilderBuilderName:
+    Type: String
+    Description: "ImageBuilderBuilderName"
+    Default: "Automated_Builder"
+  ImageBuilderImagePrefix:
+    Type: String
+    Description: "ImageBuilderImagePrefix"
+    Default: "Automated_Image"
+
+  LambdaFunctionLayerS3Key:
+    Type: String
+    Description: "S3 Key of the Lambda WinRM Library"
+    Default: "Lambda_Layer_winrm_libraries.zip"
+  FN01S3Key:
+    Type: String
+    Description: "S3 Key of the FN01_AS2_Windows_Automation_Create_Builder lambda function source zip"
+    Default: "FN01_AS2_Windows_Automation_Create_Builder.zip"
+  FN02S3Key:
+    Type: String
+    Description: "S3 Key of the N02_AS2_Windows_Automation_Scripted_Install lambda function source zip"
+    Default: "FN02_AS2_Windows_Automation_Scripted_Install.zip"
+  FN03S3Key:
+    Type: String
+    Description: "S3 Key of the FN03_AS2_Windows_Automation_Run_Image_Assistant lambda function source zip"
+    Default: "FN03_AS2_Windows_Automation_Run_Image_Assistant.zip"
+  FN04S3Key:
+    Type: String
+    Description: "S3 Key of the FN04_AS2_Windows_Automation_Image_Notification lambda function source zip"
+    Default: "FN04_AS2_Windows_Automation_Image_Notification.zip"
 Conditions:
     IsNotJoinDomain: !Or [!Equals [!Ref DefaultDomain, "none"], !Equals [!Ref DefaultDomain, ""]]
+    CreateImageBuilderSecret: !Or [!Equals [!Ref ImageBuilderSecretArn, "none"], !Equals [!Ref   ImageBuilderSecretArn, ""]]
+
+Transform: AWS::Serverless-2016-10-31
 Resources:
   ImageBuilderSecret:
-    Type: 'AWS::SecretsManager::Secret' 
+    Condition: CreateImageBuilderSecret
+    Type: 'AWS::SecretsManager::Secret'
     Properties:
-      Name: as2/builder/pw
+      Name: !Ref ImageBuilderSecretPath
       Description: "Local admin account on AppStream 2.0 image builders used in the image creation automation. This secret has a dynamically generated secret password."
       GenerateSecretString:
         SecretStringTemplate: '{"as2_builder_admin_user": "as2_builder_admin"}'
         GenerateStringKey: "as2_builder_admin_pw"
         PasswordLength: 30
-        ExcludeCharacters: '"@/\'
+        ExcludeCharacters: '"''@/\`'
       Tags:
         -
           Key: AS2_Image_Automation
@@ -101,7 +154,7 @@ Resources:
       Content:
         S3Bucket:
           Ref: SourceS3Bucket
-        S3Key: Lambda_Layer_winrm_libraries.zip
+        S3Key: !Ref LambdaFunctionLayerS3Key
       CompatibleRuntimes:
         - python3.9
         - python3.8
@@ -303,6 +356,7 @@ Resources:
               - ec2:DeleteNetworkInterface
               - appstream:TagResource              
               - appstream:DescribeImageBuilders
+              - appstream:GetImageBuilders
               - appstream:DescribeImages
               - appstream:CreateImageBuilder                
               - appstream:DeleteImageBuilder
@@ -317,7 +371,7 @@ Resources:
               - secretsmanager:DescribeSecret
             Resource:
               - Ref: SNSTopic
-              - Ref: ImageBuilderSecret
+              - !If [CreateImageBuilderSecret, Ref: ImageBuilderSecret, Ref: ImageBuilderSecretArn]
           - Effect: Allow
             Action:
               - logs:CreateLogGroup
@@ -380,10 +434,22 @@ Resources:
             Action:
               - 'lambda:InvokeFunction'
             Resource:
-              - !GetAtt 'LambdaFunction01CreateBuilder.Arn'
-              - !GetAtt 'LambdaFunction02ScriptedInstall.Arn'
-              - !GetAtt 'LambdaFunction03RunImageAssistant.Arn'
-              - !GetAtt 'LambdaFunction04ImageNotification.Arn'                 
+              - !Join
+                - ":"
+                - - !GetAtt 'LambdaFunction01CreateBuilder.Arn'
+                  - "live"
+              - !Join
+                - ":"
+                - - !GetAtt 'LambdaFunction02ScriptedInstall.Arn'
+                  - "live"
+              - !Join
+                - ":"
+                - - !GetAtt 'LambdaFunction03RunImageAssistant.Arn'
+                  - "live"
+              - !Join
+                - ":"
+                - - !GetAtt 'LambdaFunction04ImageNotification.Arn'
+                  - "live"
           - Effect: Allow
             Action:
               - xray:PutTraceSegments
@@ -414,7 +480,7 @@ Resources:
     Properties: 
       RoleName: !Join
         - "_"
-        - - "AS2_Automation_Windows_ImageBulder_Role"
+        - - "AS2_Automation_Windows_ImageBuilder_Role"
           - !Select
             - 0
             - !Split
@@ -464,7 +530,7 @@ Resources:
             Action:
               - secretsmanager:GetSecretValue
             Resource:
-              - Ref: ImageBuilderSecret
+              - !If [CreateImageBuilderSecret, Ref: ImageBuilderSecret, Ref: ImageBuilderSecretArn]
           - Effect: Allow
             Action:
               - s3:ListBucket
@@ -481,8 +547,9 @@ Resources:
       Roles:
         - !Ref ImageBuilderIAMRole
   LambdaFunction01CreateBuilder:
-    Type: AWS::Lambda::Function  
+    Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: live
       FunctionName: !Join
         - "_"
         - - "AS2_Automation_Windows_FN01_Create_Builder"
@@ -496,14 +563,14 @@ Resources:
                   - "/"
                   - !Ref "AWS::StackId"
       Handler: lambda_function.lambda_handler
-      Code:
-        S3Bucket:
+      CodeUri:
+        Bucket:
           Ref: SourceS3Bucket
-        S3Key: FN01_AS2_Windows_Automation_Create_Builder.zip
+        Key: !Ref FN01S3Key
       Environment:
         Variables:
-          Default_Description: Automated Image Builder
-          Default_DisplayName : Automated Builder
+          Default_Description: !Ref ImageBuilderDescription
+          Default_DisplayName : !Ref ImageBuilderDisplayName
           Default_Domain : 
             Fn::If:
             - IsNotJoinDomain
@@ -514,24 +581,23 @@ Resources:
             - IsNotJoinDomain
             - none
             - Ref: DefaultOU
-          Default_IB_Name : Automated_Builder
-          Default_Image :
-            Ref: AS2DefaultImage
+          Default_IB_Name : !Ref ImageBuilderBuilderName
+          Default_Image : !Ref AS2DefaultImage
+          Default_ImageBuilderSecret : !Ref ImageBuilderSecretPath
           Default_Method : Script
-          Default_Prefix : Automated_Image
+          Default_Prefix : !Ref ImageBuilderImagePrefix
           Default_Role : !GetAtt 'ImageBuilderIAMRole.Arn'
-          Default_SG :
-            Ref: ImageBuilderSecurityGroup           
-          Default_Subnet : 
-            Ref: AS2VPCSubnet1
-          Default_Type : stream.standard.medium
+          Default_SG : !Ref ImageBuilderSecurityGroup
+          Default_Subnet : !Ref AS2VPCSubnet1
           Default_S3_Bucket: !Ref WorkShopS3Bucket
+          Default_Type : !Ref AS2DefaultInstanceType
       Runtime: python3.9
       Role: !GetAtt 'LambdaFunctionIAMRole.Arn'
       Timeout: 30
   LambdaFunction02ScriptedInstall:
-    Type: AWS::Lambda::Function    
+    Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: live
       FunctionName: !Join
         - "_"
         - - "AS2_Automation_Windows_FN02_Scripted_Install"
@@ -545,10 +611,10 @@ Resources:
                   - "/"
                   - !Ref "AWS::StackId"       
       Handler: lambda_function.lambda_handler
-      Code:
-        S3Bucket:
+      CodeUri:
+        Bucket:
           Ref: SourceS3Bucket
-        S3Key: FN02_AS2_Windows_Automation_Scripted_Install.zip
+        Key: !Ref FN02S3Key
       Runtime: python3.9
       Environment:
         Variables:
@@ -568,8 +634,9 @@ Resources:
       - LambdaFunctionIAMRole
       - LambdaFunctionIAMPolicy          
   LambdaFunction03RunImageAssistant:
-    Type: AWS::Lambda::Function   
+    Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: live
       FunctionName: !Join
         - "_"
         - - "AS2_Automation_Windows_FN03_Run_Image_Assistant"
@@ -583,10 +650,10 @@ Resources:
                   - "/"
                   - !Ref "AWS::StackId"       
       Handler: lambda_function.lambda_handler
-      Code:
-        S3Bucket:
+      CodeUri:
+        Bucket:
           Ref: SourceS3Bucket
-        S3Key: FN03_AS2_Windows_Automation_Run_Image_Assistant.zip
+        Key: !Ref FN03S3Key
       Runtime: python3.9
       Layers:
         - Ref: LambdaFunctionLayer
@@ -603,8 +670,9 @@ Resources:
       - LambdaFunctionIAMRole
       - LambdaFunctionIAMPolicy          
   LambdaFunction04ImageNotification:
-    Type: AWS::Lambda::Function     
+    Type: AWS::Serverless::Function
     Properties:
+      AutoPublishAlias: live
       FunctionName: !Join
         - "_"
         - - "AS2_Automation_Windows_FN04_Image_Notification"
@@ -618,8 +686,8 @@ Resources:
                   - "/"
                   - !Ref "AWS::StackId"        
       Handler: lambda_function.lambda_handler
-      Code:
-        S3Bucket:
+      CodeUri:
+        Bucket:
           Ref: SourceS3Bucket
         S3Key: FN04_AS2_Windows_Automation_Image_Notification.zip
       Environment:
@@ -653,7 +721,7 @@ Resources:
               "States": {
                 "Create Image Builder": {
                   "Type": "Task",
-                  "Resource": "${LambdaFunction01CreateBuilder.Arn}",
+                  "Resource": "${LambdaFunction01CreateBuilder.Arn}:live",
                   "ResultPath": "$",
                   "Next": "Check Builder Status (Create)"
                 },
@@ -784,13 +852,13 @@ Resources:
                 },
                 "Remote Software Install - Script": {
                   "Type": "Task",
-                  "Resource": "${LambdaFunction02ScriptedInstall.Arn}",
+                  "Resource": "${LambdaFunction02ScriptedInstall.Arn}:live",
                   "ResultPath": null,
                   "Next": "Run Image Assistant"
                 },
                 "Run Image Assistant": {
                   "Type": "Task",
-                  "Resource": "${LambdaFunction03RunImageAssistant.Arn}",
+                  "Resource": "${LambdaFunction03RunImageAssistant.Arn}:live",
                   "ResultPath": "$.ImageStatus",
                   "Next": "Check Image Status"
                 },
@@ -847,7 +915,7 @@ Resources:
                 },
                 "Send Final Notification": {
                   "Type": "Task",
-                  "Resource": "${LambdaFunction04ImageNotification.Arn}",
+                  "Resource": "${LambdaFunction04ImageNotification.Arn}:live",
                   "ResultPath": null,
                   "End": true
                 }
@@ -901,6 +969,22 @@ Resources:
                 "Region" : <region>
               } 
 Outputs:
+  LambdaFunction01CreateBuilder:
+    Value: !Ref LambdaFunction01CreateBuilder
+  LambdaFunction01CreateBuilderAliaslive:
+    Value: !Ref LambdaFunction01CreateBuilderAliaslive
+  LambdaFunction02ScriptedInstall:
+    Value: !Ref LambdaFunction02ScriptedInstall
+  LambdaFunction02ScriptedInstallAliaslive:
+    Value: !Ref LambdaFunction02ScriptedInstallAliaslive
+  LambdaFunction03RunImageAssistant:
+    Value: !Ref LambdaFunction03RunImageAssistant
+  LambdaFunction03RunImageAssistantAliaslive:
+    Value: !Ref LambdaFunction03RunImageAssistantAliaslive
+  LambdaFunction04ImageNotification:
+    Value: !Ref LambdaFunction04ImageNotification
+  LambdaFunction04ImageNotificationAliaslive:
+    Value: !Ref LambdaFunction04ImageNotificationAliaslive
   WorkShopS3BucketName:
     Description: The bucket in S3 to upload automation execution resources including installation installation packages.
     Value: 
