@@ -20,7 +20,8 @@ import os
 import botocore
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+LOGLEVEL = os.getenv('LOGLEVEL', 'INFO').upper()
+logger.setLevel(LOGLEVEL)
 
 appstream = boto3.client('appstream')
 
