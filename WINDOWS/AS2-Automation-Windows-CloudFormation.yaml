@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
-  This template creates an end-to-end Amazon AppStream 2.0 imaging process for Microsoft Windows based images, utilizing AWS Lambda and AWS Step Functions.   
+  This template creates an end-to-end Amazon AppStream 2.0 imaging process for Microsoft Windows based images, utilizing AWS Lambda and AWS Step Functions. (uksb-28yp5tmgmq) (tag: windows)  
 Parameters:
   SourceS3Bucket:
     Type: String
