@@ -64,7 +64,7 @@
 	if ($AppDisplayName) { $Params += " --display-name """ + $AppDisplayName + """" }
 	if ($AppWorkingDir) { $Params += " --working-directory """ + $AppWorkingDir + """" }
 	if ($AppIconPath) { $Params += " --absolute-icon-path """ + $AppIconPath + """" }      
-	if ($AppParameters) { $Params += " --launch-parameters """ + $AppParameters + """" }     
+	if ($AppParameters) { $Params += ' --launch-parameters --% """' + $AppParameters + '"""'  }   
 	if ($ManifestPath) { $Params += " --absolute-manifest-path """ + $ManifestPath + """" }
 
 	#Escape spaces in EXE path
